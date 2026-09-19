@@ -16,8 +16,8 @@ The wider intuition, restated:
 
 | # | Want | Today |
 | - | ---- | ----- |
-| 1 | Canonical workflow source is host-neutral | `.cursor/` is canonical; Claude symlinks into it ([`install-claude.py:12`](../../install-claude.py#L12)) |
-| 2 | CI performs the host adaptations automatically | Adaptation is a manual local `python3 install-claude.py`; [`install.py`](../../install.py) links nothing at all |
+| 1 | Canonical workflow source is host-neutral | `.cursor/` is canonical; Claude symlinks into it (pre-extract Claude installer) |
+| 2 | CI performs the host adaptations automatically | Adaptation was a manual local Claude install step; [`install.py`](../../install.py) linked nothing at all |
 | 3 | Git tail gated by CI, PR-shaped | `sheep-sync` pushes the feature branch, `sheep-integrate` merges to `main` locally and pushes; [`smoke.yml`](../../.github/workflows/smoke.yml) runs on `push: main` — **after** the merge, never before |
 | 4 | Local dogfood still works | Dogfood is the only real end-to-end proof there is |
 
@@ -69,7 +69,7 @@ This answers "what exactly should be canonical vs generated" precisely, because 
 
 #### A.3 The rule file should stop being an `.mdc`
 
-Today `nicki-default.mdc` carries Cursor frontmatter (`description:`, `alwaysApply:`) and [`generate_claude_md()`](../../install-claude.py#L70) strips it, then applies four inline `.replace()` calls to translate host vocabulary — `Task (subagent_type: nicki)` → Agent tool, `AskQuestion` → `AskUserQuestion`, and so on ([`install-claude.py:80-90`](../../install-claude.py#L80-L90)).
+Today `nicki-default.mdc` carries Cursor frontmatter (`description:`, `alwaysApply:`) and `generate_claude_md()` / `render_claude_md()` strips it, then applies host vocabulary swaps — `Task (subagent_type: nicki)` → Agent tool, `AskQuestion` → `AskUserQuestion`, and so on (now in `install_common.py`).
 
 That substitution table is the right idea and the wrong location. Moving an `.mdc` with Cursor frontmatter into `workflow-runtime/rules/` is host-neutral in name only. Make the canonical rule plain Markdown with **neutral placeholders**, and give each installer a small declared substitution map. Both adapters then generate symmetrically instead of Claude being a patch on top of Cursor.
 
@@ -111,7 +111,7 @@ If Cursor refuses: A still lands, but `install.py` **copies** into `.cursor/` in
 
 **Recommend Track 1.** It deletes two whole failure classes for the price of one already-documented degradation. The worktree class is the sharp one: [`OWNERSHIP.md`](../OWNERSHIP.md)'s migration table already flags "worktrees inheriting `.cursor/`", and under Track 2 every `sheep-start` would have to grow a link step inside the new worktree — a load-bearing change to [`create-worktree.py`](../../.cursor/skills/start-task/scripts/create-worktree.py) that is easy to forget and fails silently (Cursor simply shows no agents). Track 1 makes it a non-event.
 
-Cost of Track 1: `_same_link()` in [`install-claude.py:31`](../../install-claude.py#L31) must also recognise "this is a regular file whose contents look like my target" — the Windows-checkout case — and repair it.
+Cost of Track 1: `_same_link()` in `install_common.py` must also recognise "this is a regular file whose contents look like my target" — the Windows-checkout case — and repair it.
 
 ### Layer B — distribution and the `nicki_template` ambition
 
@@ -242,7 +242,7 @@ Explicitly: **the `nicki_template` / CI-adaptation ambition is a separate projec
 **Installers**
 
 4. New `install_common.py` (a module, not a package): `link_dir`, `_same_link`, `_remove_dest`, plus the host substitution table. Both installers import it. `_same_link` also recognises a Windows text-file checkout and repairs it.
-5. [`install-claude.py`](../../install-claude.py): `RUNTIME_ROOT = REPO_ROOT / "workflow-runtime"`; `INVOCATION_RULE = .../rules/nicki-default.md`; update the six `.cursor/` strings in `print_success()`.
+5. Claude half of [`install.py`](../../install.py): `RUNTIME_ROOT = REPO_ROOT / "workflow-runtime"`; `INVOCATION_RULE = .../rules/nicki-default.md`; update host strings in `print_success()`.
 6. [`install.py`](../../install.py): add `verify_cursor_runtime()` (repair the committed links; copy-fallback where the OS refuses) and `write_cursor_rule()` generating `.cursor/rules/nicki-default.mdc` with frontmatter.
 
 **Machine-read path flips — same commit, no exceptions**
@@ -258,7 +258,7 @@ Explicitly: **the `nicki_template` / CI-adaptation ambition is a separate projec
 
 **CI**
 
-12. [`smoke.yml`](../../.github/workflows/smoke.yml): insert `python3 install.py && python3 install-claude.py` before `python3 test.py`. This is the only automated proof that the adapter step runs at all, and it costs one line.
+12. [`smoke.yml`](../../.github/workflows/smoke.yml): insert `python3 install.py` before `python3 test.py`. This is the only automated proof that the adapter step runs at all, and it costs one line.
 
 **Docs**
 

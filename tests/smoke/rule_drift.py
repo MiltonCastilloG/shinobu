@@ -7,7 +7,7 @@ from pathlib import Path
 
 from install_common import render_claude_md, render_cursor_rule
 
-CURSOR_RULE = ".cursor/rules/nicki-default.mdc"
+CURSOR_RULE = ".cursor/rules/shinobu-default.mdc"
 CLAUDE_MD = "CLAUDE.md"
 
 
@@ -16,7 +16,7 @@ def run(root: Path) -> None:
 
     expected_mdc = render_cursor_rule()
     with tempfile.TemporaryDirectory() as tmp:
-        tmp_mdc = Path(tmp) / "nicki-default.mdc"
+        tmp_mdc = Path(tmp) / "shinobu-default.mdc"
         tmp_mdc.write_text(expected_mdc, encoding="utf-8")
         committed = root / CURSOR_RULE
         if not committed.is_file():
@@ -35,7 +35,7 @@ def run(root: Path) -> None:
         installed = root / CLAUDE_MD
         if not installed.is_file():
             failures.append(
-                f"fail: missing installed {CLAUDE_MD} — run python3 install-claude.py"
+                f"fail: missing installed {CLAUDE_MD} — run python3 install.py"
             )
         elif installed.read_bytes() != tmp_claude.read_bytes():
             failures.append(

@@ -1,6 +1,23 @@
-# Nicki — completed tasks
+# Completed tasks
 
 Shipped work moved out of [`tasks.md`](tasks.md) to keep the backlog lean. Task archives: [`archive/`](archive/).
+
+---
+
+## Shinobu — Stage 2
+
+This repository forked from Nicki at `v0.3.0-nicki-baseline`. Jobs land here as they pass audit. Plan: [`2026-09-19-shinobu-stage-2-plan.md`](2026-09-19-shinobu-stage-2-plan.md).
+
+| # | Job | Notes |
+|---|-----|-------|
+| **S1** | Identity rename — `nicki` → `shinobu` | 75 files. Orchestrator `shinobu.md`, rule `shinobu-default.md` (+ regenerated `.mdc` and `CLAUDE.md`), `skills/shinobu/`, `shinobu-workspace.example.yaml` (self key `shinobu:`), `shinobu.code-workspace`, `shinobu_version.yaml` at `0.1.0`, `SHINOBU_WORKSPACE_ROOT`, installers, permissions keys, 13 smoke modules, README. Added a stderr warning on `create-worktree.py`'s registry fallback. Audited: suite green, grep allowlist clean, fresh clone + both installers + worktree probe, agent `name:` ↔ filename, no change under `projects/` or `worktrees/`. Human's manual registry rename still pending. |
+| | **Single installer for both hosts** | `install.py` always sets up Cursor and Claude; `install-claude.py` deleted. Smoke, README, and `.gitignore` updated to the one-command path. |
+
+---
+
+# Nicki baseline — inherited at the fork
+
+Everything below shipped in the Nicki repository before the fork and is inherited history. It is not a record of Shinobu work, and the `.cursor/`-era paths it names were superseded by `workflow-runtime/`.
 
 ---
 

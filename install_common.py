@@ -9,12 +9,12 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
 RUNTIME_ROOT = REPO_ROOT / "workflow-runtime"
-INVOCATION_RULE = RUNTIME_ROOT / "rules" / "nicki-default.md"
+INVOCATION_RULE = RUNTIME_ROOT / "rules" / "shinobu-default.md"
 
 # Cursor frontmatter for the generated .mdc adapter (not stored in the canonical rule).
 CURSOR_RULE_FRONTMATTER = """\
 ---
-description: Route to Nicki when user addresses Nicki by name (e.g. nicki fetch)
+description: Route to Shinobu when user addresses Shinobu by name (e.g. shinobu fetch)
 alwaysApply: true
 ---
 
@@ -23,12 +23,12 @@ alwaysApply: true
 # Claude-only vocabulary swaps applied when generating CLAUDE.md from the canonical rule.
 CLAUDE_SUBSTITUTIONS: list[tuple[str, str]] = [
     (
-        "invoke a **fresh** Task (`subagent_type: nicki`) — never `resume`.",
-        "invoke a **fresh** `nicki` subagent via the Agent tool — never resume a prior Nicki session.",
+        "invoke a **fresh** Task (`subagent_type: shinobu`) — never `resume`.",
+        "invoke a **fresh** `shinobu` subagent via the Agent tool — never resume a prior Shinobu session.",
     ),
     (
         "keep invoking a fresh Task on every",
-        "keep invoking a fresh `nicki` subagent on every",
+        "keep invoking a fresh `shinobu` subagent on every",
     ),
     ("**Never Task-spawn sheep**", "**Never spawn sheep**"),
     ("AskQuestion", "AskUserQuestion"),

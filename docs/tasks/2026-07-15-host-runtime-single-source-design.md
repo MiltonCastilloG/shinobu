@@ -54,7 +54,7 @@ Reuse from A (already on disk): `RUNTIME_ROOT`, `link_dir`, isolated `generate_c
 ## Success criteria
 
 1. Clean clone → `python3 install.py` → `.cursor/agents` and `.cursor/skills` are symlinks into `workflow-runtime/`.
-2. `python3 install-claude.py` → `.claude/` links into `workflow-runtime/` via `RUNTIME_ROOT`.
+2. `python3 install.py` → `.claude/` links into `workflow-runtime/` via `RUNTIME_ROOT`.
 3. Edit under `workflow-runtime/skills/…` visible to both hosts without reinstall.
 4. Both installers idempotent and self-repairing.
 5. Bootstrap / Nicki opt-in still work on Cursor and Claude.

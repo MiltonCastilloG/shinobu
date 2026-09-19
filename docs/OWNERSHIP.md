@@ -80,8 +80,8 @@ Supporting markdown does not belong under `agents/`; Cursor can discover nested 
 | `sheep-execute` | Nicki | Move flat; keep name | Nicki tail; remove from Shinobu when red/green replaces it. |
 | `sheep-red` | Shinobu | Add after fork | One scenario; success means fails right. |
 | `sheep-green` | Shinobu | Add after fork | Minimal change to pass; does not edit test/story. |
-| `sheep-test-refactor` | Shinobu | Add after fork | Tests-only member of the parallel refactor pair. |
-| `sheep-implementation-refactor` | Shinobu | Add after fork | Implementation-only member of the parallel refactor pair. |
+| `sheep-green-refactor` | Shinobu | Add after fork | Implementation-only refactor; runs first. |
+| `sheep-red-refactor` | Shinobu | Add after fork | Tests-only refactor; runs second, after green-refactor. |
 
 Agent permissions use the same flat agent names. No Nicki/Shinobu suffix keys are needed because each repository has its own `.cursor/hooks/agent-permissions.json`.
 
@@ -155,7 +155,7 @@ The old prefixed artifact proposal (`nicki-status.json`, `shinobu-status.json`, 
 | Nicki routing | Nicki | Stage 1 becomes `start → spec → gherkin → subtasks → execute → …`. |
 | Bootstrap/read path | fork baseline | Neutral extraction removes `.cursor` as canonical source; fork changes product selector/routing only. |
 | Status writer | fork baseline | Keep `status.json`; route from the repository-local routing file. |
-| Shinobu routing | Shinobu | After fork: `start → spec → gherkin → red/green loop → parallel refactors → review → git tail`. |
+| Shinobu routing | Shinobu | After fork: `start → spec → gherkin → red/green loop → green-refactor → red-refactor → review → git tail`. |
 | Lifecycle implementation | fork baseline | Copied with history, then independently maintained; never parameterized across repositories. |
 
 ## Rules, hooks, permissions, installers
@@ -168,8 +168,7 @@ The old prefixed artifact proposal (`nicki-status.json`, `shinobu-status.json`, 
 | `.cursor/hooks/enforce-agent-tools.sh` | host adapter | Stay Cursor-specific; each repository has its own agent keys. |
 | `.cursor/hooks/agent-permissions.json` | host adapter | Stay Cursor-specific; keep generic sheep names. |
 | `.cursor/permissions.json` | host adapter | Stay Cursor-specific; update allowed paths after neutral extraction. |
-| `install.py` | fork baseline | Add Cursor runtime adapter installation; fork changes product-facing messages/config. |
-| `install-claude.py` | fork baseline | Point `RUNTIME_ROOT` at `workflow-runtime/`; fork changes product-facing messages. |
+| `install.py` | fork baseline | Installs both Cursor and Claude host adapters from `workflow-runtime/`; fork changes product-facing messages/config. |
 
 ## Smoke and harness
 
@@ -210,7 +209,7 @@ Leave:
 3. Create the Shinobu remote and replace `origin`.
 4. Change product selector, orchestrator, routing, installer text, workspace/config/version filenames, and documentation.
 5. Remove Nicki-only subtask/execute tail where Shinobu no longer uses it.
-6. Add red, green, test-refactor, and implementation-refactor sheep/skills.
+6. Add `sheep-red`, `sheep-green`, `sheep-green-refactor`, and `sheep-red-refactor` sheep/skills. The two refactors run serially: green-refactor, then red-refactor.
 7. Keep shared-at-fork code independent; cherry-pick only deliberate critical fixes.
 
 ## Deferred

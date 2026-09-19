@@ -10,5 +10,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python3 install.py && python3 install-claude.py
+      - run: python3 install.py
       - run: python3 test.py

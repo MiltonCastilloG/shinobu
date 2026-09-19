@@ -8,7 +8,7 @@
 
 **Fresh-install context:** [Fresh install design](../archive/fresh-install/2026-07-02-fresh-install-design.md) — historical `#20` text calls the target `nicki-workflow/`; this live checklist supersedes it with `workflow-runtime/`.
 
-**Prerequisite:** Approach A shipped — `.cursor/` canonical, `RUNTIME_ROOT = .cursor`, Claude symlinks via `install-claude.py`. See [`tasks-done.md`](../tasks-done.md).
+**Prerequisite:** Approach A shipped — `.cursor/` canonical, `RUNTIME_ROOT = .cursor`, Claude symlinks via the installer. See [`tasks-done.md`](../tasks-done.md).
 
 **Goal:** One **host-neutral** committed canonical dir for agents/skills/rules; host dirs (`.cursor/`, `.claude/`) become adapters via symlinks + generated rule files. Land this once before the history-preserving Shinobu repository fork.
 
@@ -47,7 +47,7 @@ Reference A→B delta from the [B design](2026-07-15-host-runtime-single-source-
 - [ ] Leave host-only Cursor files in place if not moved: `permissions.json`, `hooks.json`, `hooks/` (unless a later task relocates them)
 - [ ] Verify no stray copies of agents/skills remain as real directories under `.cursor/` after move
 
-## Flip `RUNTIME_ROOT` in `install-claude.py`
+## Flip `RUNTIME_ROOT` in the Claude install path
 
 - [ ] Set `RUNTIME_ROOT` from `.cursor` → `workflow-runtime`
 - [ ] Confirm `link_dir(RUNTIME_ROOT/agents → .claude/agents)` and skills still relative and self-repairing
@@ -63,7 +63,7 @@ Per fresh-install "Future hook (#20)" and single-source B delta:
 - [ ] Symlink: `workflow-runtime/skills` → `.cursor/skills`
 - [ ] Rule file: **generate** `.cursor/rules/nicki-default.mdc` from canonical rule (or keep a thin Cursor-only adapter) — **do not symlink the `.mdc` if that breaks Cursor's "no follow references" constraint**; generate-inline stays the safe pattern
 - [ ] Fresh clone path: `python3 install.py` must create Cursor links so Cursor works without a manual second script (README must match)
-- [ ] Claude path: still `python3 install-claude.py` after or documented beside install
+- [ ] Claude path: covered by `python3 install.py` (both hosts)
 
 ## Gitignore / git tracking strategy
 
@@ -97,7 +97,7 @@ Checklist:
 
 - [ ] Keep **generate, don't symlink** for host rule/invocation files
 - [ ] Canonical rule lives under `workflow-runtime/rules/nicki-default.mdc`
-- [ ] `install-claude.py` → generates root `CLAUDE.md`
+- [ ] `install.py` → generates root `CLAUDE.md`
 - [ ] Cursor install → generates/refreshes `.cursor/rules/nicki-default.mdc` (or leaves a Cursor-specific wrapper that embeds the same opt-in Nicki text)
 - [ ] Document: edit the canonical rule; re-run host install(s) when the invocation rule changes (agent/skill edits still need **no** reinstall if symlinks)
 
@@ -105,12 +105,12 @@ Checklist:
 
 - [ ] `README.md` — canonical dir is `workflow-runtime/`; edit there; host dirs are adapters; atomic-save warning applies to **both** `.cursor/` and `.claude/` symlink trees
 - [ ] `docs/future-tasks/PLAN.md` — replace "workflow lives in `.cursor/`" / `package/.cursor/` language with neutral runtime + install-into-host
-- [ ] Fresh-install design / archive notes — optional batch rename `install-claude` naming (claude-adapter suggestion) when touching bootstrap docs
+- [ ] Fresh-install design / archive notes — optional batch rename of the old Claude-only installer naming (claude-adapter suggestion) when touching bootstrap docs
 
 ## Manual verification checklist (Cursor + Claude after extract)
 
 - [ ] Clean clone → `python3 install.py` → `.cursor/agents` and `.cursor/skills` are symlinks into `workflow-runtime/`
-- [ ] `python3 install-claude.py` → `.claude/agents` and `.claude/skills` are symlinks into `workflow-runtime/` (via `RUNTIME_ROOT`)
+- [ ] `python3 install.py` → `.claude/agents` and `.claude/skills` are symlinks into `workflow-runtime/` (via `RUNTIME_ROOT`)
 - [ ] Edit a skill under `workflow-runtime/skills/…`; change visible in Cursor path **and** Claude path without reinstall
 - [ ] Re-run both installers → idempotent; no error
 - [ ] Break a host link (replace with a regular directory) → re-run installer → link repaired
