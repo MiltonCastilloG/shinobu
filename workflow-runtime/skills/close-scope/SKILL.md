@@ -36,7 +36,7 @@ workflow-runtime/skills/close-scope/scripts/unregister-global-status.sh "<worksp
 
 ## 3. Teardown
 
-Prereq: integrate done + unregister done (or skip). Nicki confirm: delete worktree.
+Prereq: integrate done + unregister done (or skip). Shinobu confirm: delete worktree.
 
 Capture the task branch from `git worktree list` **before** delete (needed when the folder is already gone but registration is `prunable`).
 

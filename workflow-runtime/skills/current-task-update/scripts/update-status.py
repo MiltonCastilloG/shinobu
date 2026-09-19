@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Write current-task/status.json from Nicki summary JSON.
+"""Write current-task/status.json from Shinobu summary JSON.
 
 Required inputs:
   --worktree (CLI)
-  --step (CLI) — pipeline step Nicki dispatched; preferred over summary
+  --step (CLI) — pipeline step Shinobu dispatched; preferred over summary
     completed_step. When absent, summary may still supply completed_step or a
     position-only next_step.
 
@@ -11,7 +11,7 @@ Modes (--mode):
   normal — default; advances task.current_step / next_step from routing.
   jump   — skip ahead to --step: set next_step to the target; leave current_step
            untouched; no summary artifact required or materialized; log
-           side_effects with artifact null. Nicki then runs that sheep.
+           side_effects with artifact null. Shinobu then runs that sheep.
 
 Both modes need a task. Ad-hoc work is a sheep invoked directly by the caller
 and never reaches this script.
@@ -21,7 +21,7 @@ Optional summary fields (defaults applied):
   artifact — skip artifact pointer when absent or when the step has no
     routing artifact_key
   open_questions — default []; non-empty holds position instead of advancing
-  next_step — when set, overrides routing after a completed step (Nicki review
+  next_step — when set, overrides routing after a completed step (Shinobu review
     outcomes); required for position-only writes with no completed step
   summary, task.* — ignored or derived
 
@@ -187,7 +187,7 @@ def _derive_next_step(
     open_questions: list[Any],
     summary: dict[str, Any],
 ) -> str | None:
-    """Explicit next_step wins (Nicki's review verdict); open questions hold
+    """Explicit next_step wins (Shinobu's review verdict); open questions hold
     position; otherwise routing advances."""
     task = status.get("task") or {}
 
@@ -209,15 +209,15 @@ def main() -> int:
     parser.add_argument("--worktree", required=True, help="Repo-relative or absolute worktree path")
     parser.add_argument(
         "--json-path",
-        help="Path to Nicki summary JSON; if omitted with no --yaml-path, read stdin as JSON",
+        help="Path to Shinobu summary JSON; if omitted with no --yaml-path, read stdin as JSON",
     )
     parser.add_argument(
         "--yaml-path",
-        help="Deprecated: path to Nicki summary YAML (in-flight only)",
+        help="Deprecated: path to Shinobu summary YAML (in-flight only)",
     )
     parser.add_argument(
         "--step",
-        help="Pipeline step Nicki dispatched; overrides summary completed_step",
+        help="Pipeline step Shinobu dispatched; overrides summary completed_step",
     )
     parser.add_argument(
         "--mode",

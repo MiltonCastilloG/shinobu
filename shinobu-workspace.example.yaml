@@ -1,22 +1,22 @@
-# Nicki workspace registry — example stub
-# Copy to your workspace root as nicki-workspace.yaml and edit.
+# Shinobu workspace registry — example stub
+# Copy to your workspace root as shinobu-workspace.yaml and edit.
 
 version: 1
 
 # Path to this workspace (optional; defaults to directory containing this file)
-# workspace_path: ~/NickiWorkspace
+# workspace_path: ~/ShinobuWorkspace
 
-# Nicki runtime version installed into managed projects
-# nicki_runtime_version: 0.1.0
+# Shinobu runtime version installed into managed projects
+# shinobu_runtime_version: 0.1.0
 
 projects:
-  # Nicki self-tasks (workspace repo itself)
-  nicki:
+  # Shinobu self-tasks (workspace repo itself)
+  shinobu:
     path: .
     git:
       default_branch: main
       remote: origin
-    # Paths copied from workspace root into each new nicki worktree (glob * supported)
+    # Paths copied from workspace root into each new shinobu worktree (glob * supported)
     copy:
       - .env
       - .env.*

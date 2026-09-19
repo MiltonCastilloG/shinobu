@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run Nicki harness and workflow smoke tests."""
+"""Run Shinobu harness and workflow smoke tests."""
 
 from __future__ import annotations
 

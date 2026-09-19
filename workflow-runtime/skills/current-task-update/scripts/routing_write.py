@@ -9,7 +9,7 @@ from typing import Any
 MODES = ("normal", "jump")
 
 _ROUTING_PATH = (
-    Path(__file__).resolve().parent.parent.parent / "nicki" / "routing.json"
+    Path(__file__).resolve().parent.parent.parent / "shinobu" / "routing.json"
 )
 
 

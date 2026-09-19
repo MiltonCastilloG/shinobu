@@ -5,7 +5,7 @@ Usage:
   register-global-status.py <workspace_root> <project> <slug> <worktree_path> [task_id]
 
 When task_id is omitted, assigns the next incremental id for that project.
-Registry keys use format <project>:<id> (e.g. nicki:3, tetris-clone-frp:1).
+Registry keys use format <project>:<id> (e.g. shinobu:3, tetris-clone-frp:1).
 
 Stdout: human line plus JSON handoff on last line.
 Only sheep-start should invoke this script (registry write boundary).

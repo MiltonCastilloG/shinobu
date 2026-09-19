@@ -1,0 +1,6 @@
+# Shinobu
+# Bump version when you change workflow-runtime/ (agents, skills, rules) or .cursor/ hooks.
+
+name: shinobu
+version: 0.1.0
+description: Workflow orchestrator for Cursor and Claude Code (Shinobu fork)

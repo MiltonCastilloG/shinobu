@@ -8,11 +8,11 @@ from tests.smoke._helpers import run_hook, script
 def run(root: Path) -> None:
     hook = script(root, ".cursor/hooks/enforce-agent-tools.sh")
     cases = [
-        {"tool_name": "Shell", "agent_type": "nicki"},
-        {"tool_name": "Read", "agent_type": "nicki"},
+        {"tool_name": "Shell", "agent_type": "shinobu"},
+        {"tool_name": "Read", "agent_type": "shinobu"},
         {"tool_name": "Shell"},
-        {"tool_name": "Write", "description": "Update nicki.md and routing.json"},
-        {"tool_name": "Grep", "description": "find references to nicki in README"},
+        {"tool_name": "Write", "description": "Update shinobu.md and routing.json"},
+        {"tool_name": "Grep", "description": "find references to shinobu in README"},
         {"tool_name": "Write", "subagent_type": "sheep-spec"},
     ]
     for payload in cases:

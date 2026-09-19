@@ -3,7 +3,7 @@
   "active_task": "1",
   "tasks": {
     "1": {
-      "project": "nicki",
+      "project": "shinobu",
       "slug": "status-architecture",
       "worktree_path": ".",
       "status_path": "current-task/status.example.json"

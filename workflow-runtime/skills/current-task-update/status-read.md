@@ -2,9 +2,9 @@
 
 Per-task `current-task/status.json`. Writer schema: [status-format.md](status-format.md).
 
-**Nicki bootstrap:** `bootstrap-context.py` stdout supplies `current_step`, `next_step`, `sheep` — do not re-read status during bootstrap.
+**Shinobu bootstrap:** `bootstrap-context.py` stdout supplies `current_step`, `next_step`, `sheep` — do not re-read status during bootstrap.
 
-## Fields Nicki uses
+## Fields Shinobu uses
 
 | Section | Fields |
 |---------|--------|

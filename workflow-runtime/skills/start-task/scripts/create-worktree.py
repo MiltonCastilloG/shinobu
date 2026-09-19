@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Create one Nicki task worktree from workspace root.
+"""Create one Shinobu task worktree from workspace root.
 
 Workflow (happy path):
   1. Validate workspace root cwd
-  2. Load nicki-workspace.yaml (or .example.yaml)
+  2. Load shinobu-workspace.yaml (or .example.yaml)
   3. git pull on base branch in project git root
   4. git worktree add at worktrees/<project>-<slug>
   5. Copy registry-declared locals (skip missing with notice)
@@ -16,7 +16,7 @@ On recoverable failure, partial worktrees are preserved. See WORKFLOW.md
 for manual recovery steps.
 
 Usage:
-  create-worktree.py --project nicki --slug my-task --type chore [--original "..."]
+  create-worktree.py --project shinobu --slug my-task --type chore [--original "..."]
   create-worktree.py --project tetris-clone-frp --slug hero-section --type feature
   create-worktree.py --dry-run ...   # validate only, no git/copy/register
 """
@@ -118,7 +118,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def _parse_simple_yaml(text: str) -> dict[str, Any]:
-    """Minimal YAML subset for nicki-workspace registry (stdlib fallback)."""
+    """Minimal YAML subset for shinobu-workspace registry (stdlib fallback)."""
     root: dict[str, Any] = {"projects": {}}
     projects: dict[str, Any] = root["projects"]
     current_project: str | None = None
@@ -171,25 +171,32 @@ def _parse_simple_yaml(text: str) -> dict[str, Any]:
 def find_workspace_root() -> Path:
     cwd = Path.cwd().resolve()
     markers = (
-        cwd / "nicki-workspace.yaml",
-        cwd / "nicki-workspace.example.yaml",
+        cwd / "shinobu-workspace.yaml",
+        cwd / "shinobu-workspace.example.yaml",
         cwd / "workflow-runtime",
         cwd / ".cursor" / "skills" / "start-task",
     )
     if not any(p.exists() for p in markers):
         raise WorktreeError(
-            "Must run from Nicki workspace root (nicki-workspace.yaml, "
+            "Must run from Shinobu workspace root (shinobu-workspace.yaml, "
             "workflow-runtime/, or .cursor/skills/start-task/ required)."
         )
     return cwd
 
 
 def load_registry(workspace: Path) -> dict[str, Any]:
-    for name in ("nicki-workspace.yaml", "nicki-workspace.example.yaml"):
-        path = workspace / name
-        if path.exists():
-            return _load_yaml(path)
-    raise WorktreeError("No nicki-workspace.yaml or nicki-workspace.example.yaml found.")
+    live = workspace / "shinobu-workspace.yaml"
+    if live.exists():
+        return _load_yaml(live)
+    example = workspace / "shinobu-workspace.example.yaml"
+    if example.exists():
+        print(
+            "warning: shinobu-workspace.yaml not found; falling back to "
+            "shinobu-workspace.example.yaml (placeholder remotes)",
+            file=sys.stderr,
+        )
+        return _load_yaml(example)
+    raise WorktreeError("No shinobu-workspace.yaml or shinobu-workspace.example.yaml found.")
 
 
 def detect_default_branch(git_root: Path) -> str | None:
@@ -563,7 +570,7 @@ def create_worktree(
 
     add_worktree(workspace, cfg, wt_rel, branch, dry_run)
 
-    copy_source = workspace if project_id == "nicki" else cfg.path
+    copy_source = workspace if project_id == "shinobu" else cfg.path
     copy_notices = copy_locals(copy_source, workspace / wt_rel, cfg.copy, dry_run)
     handoff.warnings.extend(copy_notices)
 
@@ -595,8 +602,8 @@ def create_worktree(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Create one Nicki task worktree.")
-    parser.add_argument("--project", required=True, help="Registry project id (e.g. nicki)")
+    parser = argparse.ArgumentParser(description="Create one Shinobu task worktree.")
+    parser.add_argument("--project", required=True, help="Registry project id (e.g. shinobu)")
     parser.add_argument("--slug", required=True, help="Kebab-case task slug")
     parser.add_argument(
         "--type",

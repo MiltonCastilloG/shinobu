@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# preToolUse: deny tools not allowed for the active Nicki workflow agent.
+# preToolUse: deny tools not allowed for the active Shinobu workflow agent.
 set -euo pipefail
 
 PERMISSIONS="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/agent-permissions.json"
@@ -14,7 +14,7 @@ deny() {
     '{
       permission: "deny",
       user_message: ("Blocked " + $tool_name + " for " + $agent + "."),
-      agent_message: ("Tool " + $tool_name + " (" + $tool_key + ") is denied for " + $agent + ". Nicki sends sheep for disk work.")
+      agent_message: ("Tool " + $tool_name + " (" + $tool_key + ") is denied for " + $agent + ". Shinobu sends sheep for disk work.")
     }'
 }
 
@@ -54,7 +54,7 @@ resolve_agent() {
   local agent
 
   # Only trust explicit agent identity from Cursor — never match task/description
-  # text (e.g. "nicki" in a prompt falsely resolves to the nicki orchestrator).
+  # text (e.g. "shinobu" in a prompt falsely resolves to the shinobu orchestrator).
   for field in subagent_type agent_type; do
     agent="$(normalize_agent "$(printf '%s' "$input" | jq -r --arg f "$field" '.[$f] // empty')")"
     if [[ -n "$agent" ]] && jq -e --arg a "$agent" 'has($a)' "$PERMISSIONS" >/dev/null; then

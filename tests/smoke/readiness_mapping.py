@@ -8,7 +8,7 @@ from pathlib import Path
 
 def run(root: Path) -> None:
     routing = json.loads(
-        (root / "workflow-runtime/skills/nicki/routing.json").read_text(encoding="utf-8")
+        (root / "workflow-runtime/skills/shinobu/routing.json").read_text(encoding="utf-8")
     )
     if routing.get("readiness_routing"):
         raise AssertionError("fail: readiness_routing must be removed")

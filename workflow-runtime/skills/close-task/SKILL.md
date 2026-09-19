@@ -1,6 +1,6 @@
 ---
 name: close-task
-description: "Unregister global-status, delete worktree. After integrate + Nicki close confirm."
+description: "Unregister global-status, delete worktree. After integrate + Shinobu close confirm."
 disable-model-invocation: true
 ---
 
@@ -37,5 +37,5 @@ to `close`.
 
 ## Safety
 
-- No close without Nicki confirm.
+- No close without Shinobu confirm.
 - No `task: true`.

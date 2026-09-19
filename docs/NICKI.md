@@ -1,5 +1,7 @@
 # Nicki — workflow orchestrator context
 
+> Describes the Nicki baseline this repository inherited at the fork. Shinobu's pipeline replaces it — see [`SHINOBU.md`](SHINOBU.md). Rewritten in Stage 2 job S7.
+
 Nicki is the orchestrator for the CastleMill current-task pipeline. Nicki controls workflow order, not implementation. Nicki runs bootstrap for position, asks yes only before execute and sync, sends the correct sheep, and sends `sheep-status` after every step — except start, whose script already wrote the position, and close, which deletes the task context folder.
 
 Use this document as a rebuild guide: what Nicki is, what it controls, how the pieces fit together, and the key decisions that shaped the design.
@@ -17,7 +19,7 @@ Use this document as a rebuild guide: what Nicki is, what it controls, how the p
 | Send `sheep-status` automatically after each sheep (except start and close) | Skip execute/sync without explicit user confirmation |
 | Pack the **spec path** into `sheep-gherkin` (plus story output path) | Re-derive sheep map from prose (scripts + `routing.json` own that) |
 
-Nicki = `workflow-runtime/agents/nicki.md` subagent (`readonly: false` — Cursor needs write to spawn sheep; shell only for bootstrap). Invoke via Task (`subagent_type: nicki`) or address by name. Custom Cursor mode may wrap Nicki later; not promised today.
+Nicki = `workflow-runtime/agents/shinobu.md` subagent (`readonly: false` — Cursor needs write to spawn sheep; shell only for bootstrap). Invoke via Task (`subagent_type: nicki`) or address by name. Custom Cursor mode may wrap Nicki later; not promised today.
 
 ### Harness scripts
 
@@ -42,7 +44,7 @@ Harness crash / bad stdout → `sheep-fallback` (not on `written: false` input e
 
 | Layer | Path | Role |
 | ----- | ---- | ---- |
-| Nicki | `workflow-runtime/agents/nicki.md` + `workflow-runtime/skills/nicki/routing.json` | Pipeline, transitions, status-update summaries, output paths |
+| Nicki | `workflow-runtime/agents/shinobu.md` + `workflow-runtime/skills/shinobu/routing.json` | Pipeline, transitions, status-update summaries, output paths |
 | Sheep | `workflow-runtime/agents/sheep-*.md` | Workflow binding — disk inputs, handoffs; loaded in **child** Task context only (Nicki sends) |
 | Skill | `workflow-runtime/skills/<name>/` | Pure functionality — procedures and artifact schemas; no pipeline knowledge |
 
@@ -54,7 +56,7 @@ See `workflow-runtime/skills/README.md` for rules and workflow exceptions.
 
 **State writer** is `sheep-status`: sole writer for per-task `current-task/status.json`. **Registry writer** is `sheep-start` / `sheep-close` only for `global-status.json`. Nicki never writes either directly.
 
-**Ad-hoc work** spawns a sheep directly from the parent agent (or attaches the skill) — no task, no status write. `sheep-start`, `sheep-close`, and `sheep-status` stay Nicki-only. Rule: `workflow-runtime/rules/nicki-default.md`.
+**Ad-hoc work** spawns a sheep directly from the parent agent (or attaches the skill) — no task, no status write. `sheep-start`, `sheep-close`, and `sheep-status` stay Nicki-only. Rule: `workflow-runtime/rules/shinobu-default.md`.
 
 ---
 
@@ -270,9 +272,9 @@ Partial review scope (when supplied via Nicki prompt) is conversation-scoped. Re
 
 | File | Role |
 | ---- | ---- |
-| `workflow-runtime/agents/nicki.md` | Nicki subagent definition |
-| `workflow-runtime/skills/nicki/routing.json` | Step → sheep, prompts, harness_failure |
-| `workflow-runtime/skills/nicki/scripts/bootstrap-context.py` | Read harness |
+| `workflow-runtime/agents/shinobu.md` | Nicki subagent definition |
+| `workflow-runtime/skills/shinobu/routing.json` | Step → sheep, prompts, harness_failure |
+| `workflow-runtime/skills/shinobu/scripts/bootstrap-context.py` | Read harness |
 | `docs/NICKI.md` | This context overview |
 
 ### State
@@ -314,7 +316,7 @@ Partial review scope (when supplied via Nicki prompt) is conversation-scoped. Re
 | ---- | ---- |
 | `workflow-runtime/skills/conflict-resolution/SKILL.md` | Shared merge conflict protocol for sync and integrate |
 | `workflow-runtime/skills/validation/` | **Retired** — historical readiness format only |
-| `workflow-runtime/rules/nicki-default.md` | Opt-in Nicki routing + ad-hoc sheep rules |
+| `workflow-runtime/rules/shinobu-default.md` | Opt-in Nicki routing + ad-hoc sheep rules |
 | `workflow-runtime/skills/hook-contract/SKILL.md` | Hook / permissions contract |
 
 ---
@@ -344,7 +346,7 @@ Cursor compacts chats — disk wins via harness: `bootstrap-context.py` stdout, 
 
 ## Further reading
 
-- Nicki agent definition: [`workflow-runtime/agents/nicki.md`](../workflow-runtime/agents/nicki.md)
+- Nicki agent definition: [`workflow-runtime/agents/shinobu.md`](../workflow-runtime/agents/shinobu.md)
 - Flexibility (shipped + optional quoting polish): [`tasks/flexibility.md`](tasks/flexibility.md) → [`archive/flexibility/report.md`](archive/flexibility/report.md)
 - Harness read/write ADR: [`archive/bootstrap-script/2026-07-17-harness-read-write-types-design.md`](archive/bootstrap-script/2026-07-17-harness-read-write-types-design.md)
 - Retire check-gate: [`archive/retire-check-gate/report.md`](archive/retire-check-gate/report.md)

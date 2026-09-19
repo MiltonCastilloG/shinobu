@@ -50,22 +50,22 @@ def _fixture(base: Path) -> tuple[Path, Path]:
             },
         },
     )
-    _put(workspace / "nicki-workspace.example.yaml", {"name": "test"})
+    _put(workspace / "shinobu-workspace.example.yaml", {"name": "test"})
     return workspace, worktree
 
 
 def run(root: Path) -> None:
-    validate = script(root, "workflow-runtime/skills/nicki/scripts/validate-harness-stdout.py")
+    validate = script(root, "workflow-runtime/skills/shinobu/scripts/validate-harness-stdout.py")
     required = ("active_task", "status_path", "current_step", "next_step", "sheep")
 
     with tempfile.TemporaryDirectory() as td:
         workspace, worktree = _fixture(Path(td))
-        boot = script(root, "workflow-runtime/skills/nicki/scripts/bootstrap-context.py")
+        boot = script(root, "workflow-runtime/skills/shinobu/scripts/bootstrap-context.py")
         proc = run_py(
             boot,
             "--worktree",
             str(worktree),
-            env={**os.environ, "NICKI_WORKSPACE_ROOT": str(workspace)},
+            env={**os.environ, "SHINOBU_WORKSPACE_ROOT": str(workspace)},
             cwd=workspace,
         )
         if proc.returncode != 0:

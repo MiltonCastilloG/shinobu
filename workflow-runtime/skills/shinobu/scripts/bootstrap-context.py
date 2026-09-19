@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Emit Nicki bootstrap orchestration context on stdout.
+"""Emit Shinobu bootstrap orchestration context on stdout.
 
 Usage:
-  bootstrap-context.py --worktree worktrees/nicki-my-task
+  bootstrap-context.py --worktree worktrees/shinobu-my-task
 
 Stdout JSON: active_task, status_path, current_step, next_step, sheep
 Exit 0 on success. Registry / status failures exit 1 with stderr and empty stdout.
@@ -79,7 +79,7 @@ def bootstrap(worktree_arg: str) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Nicki bootstrap context.")
+    parser = argparse.ArgumentParser(description="Shinobu bootstrap context.")
     parser.add_argument("--worktree", required=True, help="Task worktree path")
     args = parser.parse_args()
     try:

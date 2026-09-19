@@ -1,6 +1,8 @@
 # Nicki workflow diagrams
 
-Visual maps of the current-task pipeline as defined in `workflow-runtime/agents/`, `workflow-runtime/skills/nicki/routing.json`, and `workflow-runtime/skills/`.
+> Describes the Nicki baseline this repository inherited at the fork. Shinobu's pipeline replaces it — see [`SHINOBU.md`](SHINOBU.md). Rewritten in Stage 2 job S7.
+
+Visual maps of the current-task pipeline as defined in `workflow-runtime/agents/`, `workflow-runtime/skills/shinobu/routing.json`, and `workflow-runtime/skills/`.
 
 For orchestrator rules and artifact schemas, see [`NICKI.md`](NICKI.md).
 

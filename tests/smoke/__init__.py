@@ -1,1 +1,1 @@
-"""Nicki harness and workflow smoke tests."""
+"""Shinobu harness and workflow smoke tests."""

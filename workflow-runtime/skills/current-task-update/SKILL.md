@@ -1,12 +1,12 @@
 ---
 name: current-task-update
-description: "Update current-task/status.json from a compact Nicki workflow summary. Status-update writer — never touches global-status.json. Use when Nicki finishes a workflow step."
+description: "Update current-task/status.json from a compact Shinobu workflow summary. Status-update writer — never touches global-status.json. Use when Shinobu finishes a workflow step."
 disable-model-invocation: true
 ---
 
 # Status update (current-task-update)
 
-Update per-task workflow state from Nicki summary. Writes exactly one file: `current-task/status.json` under the task worktree.
+Update per-task workflow state from Shinobu summary. Writes exactly one file: `current-task/status.json` under the task worktree.
 
 **Never write `global-status.json`.** Registry write boundary: [global-status-format.md](global-status-format.md).
 
@@ -18,8 +18,8 @@ Schemas:
 
 ## When to use
 
-- Nicki completed `start`, `spec`, `gherkin`, `subtasks`, `execute`, `review`, `acceptance`, `sync`, `integrate`, or fix-loop routing.
-- Nicki needs next step, artifact pointers, or open questions persisted.
+- Shinobu completed `start`, `spec`, `gherkin`, `subtasks`, `execute`, `review`, `acceptance`, `sync`, `integrate`, or fix-loop routing.
+- Shinobu needs next step, artifact pointers, or open questions persisted.
 - Worktree exists; need init missing `current-task/status.json`.
 
 ## Required inputs
@@ -27,20 +27,20 @@ Schemas:
 | Input | Required | Notes |
 |-------|----------|-------|
 | Worktree path | Yes | Absolute or repo-relative |
-| Nicki summary | Yes | Compact JSON summary of step result |
+| Shinobu summary | Yes | Compact JSON summary of step result |
 
-## Nicki summary format
+## Shinobu summary format
 
-**Required:** none in the summary when Nicki passes `--step` (position comes from
+**Required:** none in the summary when Shinobu passes `--step` (position comes from
 routing). Position-only writes (no completed step) still need `next_step`.
 
 **Optional:** `completed_step` (overridden by `--step`), `artifact` (document
-steps), `open_questions`, `summary`, `next_step` (Nicki
+steps), `open_questions`, `summary`, `next_step` (Shinobu
 override after review; otherwise routing supplies it when a step completed).
 Position-only writes still need `next_step`.
 
 **Blocked is not a field.** Non-empty `open_questions` holds `next_step` where it
-was. Precedence on a completed step: an explicit summary `next_step` wins (Nicki's
+was. Precedence on a completed step: an explicit summary `next_step` wins (Shinobu's
 review verdict), then non-empty `open_questions` holds, then routing advances.
 
 **CLI:** `--step <name>` names the dispatched step and wins over summary
@@ -87,7 +87,7 @@ For gherkin: set `artifacts.story` from the summary `artifact` (usually `current
 Task Progress:
 - [ ] Resolve worktree scope
 - [ ] Load existing status.json if present
-- [ ] Parse Nicki summary
+- [ ] Parse Shinobu summary
 - [ ] Validate transition
 - [ ] Write current-task/status.json
 - [ ] Report updated step and next step

@@ -1,6 +1,6 @@
 ---
 name: sheep-review
-description: "Nicki sheep. Path only. Skill: review-execution."
+description: "Shinobu sheep. Path only. Skill: review-execution."
 model: inherit
 readonly: false
 is_background: false
@@ -8,7 +8,7 @@ is_background: false
 
 # Sheep review
 
-You are a **sheep**. Your caller sent you — Nicki on the pipeline, or the agent directly for ad-hoc work. You do not choose the path.
+You are a **sheep**. Your caller sent you — Shinobu on the pipeline, or the agent directly for ad-hoc work. You do not choose the path.
 
 Run `workflow-runtime/skills/review-execution/SKILL.md`. Report findings in the return `summary` for chat. Do **not** write files — no review handoffs, no `## Fix` on subtasks, no `status.json`.
 

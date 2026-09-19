@@ -1,4 +1,4 @@
-"""Shared helpers for Nicki bootstrap / harness read path."""
+"""Shared helpers for Shinobu bootstrap / harness read path."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ ROUTING_PATH = SCRIPT_DIR.parent / "routing.json"
 
 
 def workspace_root() -> Path:
-    override = os.environ.get("NICKI_WORKSPACE_ROOT")
+    override = os.environ.get("SHINOBU_WORKSPACE_ROOT")
     if override:
         return Path(override).resolve()
     p = SCRIPT_DIR
@@ -22,7 +22,7 @@ def workspace_root() -> Path:
             gitdir = Path(git.read_text(encoding="utf-8").split(":", 1)[1].strip())
             if "/worktrees/" in gitdir.as_posix():
                 return gitdir.parent.parent.parent
-        if (p / "worktrees").is_dir() and (p / "nicki-workspace.example.yaml").exists():
+        if (p / "worktrees").is_dir() and (p / "shinobu-workspace.example.yaml").exists():
             return p
         p = p.parent
     return SCRIPT_DIR.parent.parent.parent.parent

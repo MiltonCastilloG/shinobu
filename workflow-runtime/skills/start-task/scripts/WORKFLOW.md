@@ -7,7 +7,7 @@ in order — do not silently overwrite existing paths or branches.
 ## Registry default_branch (r2 fix)
 
 Managed projects may use `main` or `master` as their git default. The workspace registry
-(`nicki-workspace.yaml` / `.example.yaml`) must declare the correct `git.default_branch`
+(`shinobu-workspace.yaml` / `.example.yaml`) must declare the correct `git.default_branch`
 per project (e.g. `tetris-clone-frp` → `master`, `castlemill-landing` → `main`).
 
 If the registry value is wrong or the ref does not exist, `create-worktree.py` auto-detects
@@ -29,8 +29,8 @@ Git subprocess failures are wrapped as structured JSON on stderr (handoff fields
 
 ## Happy-path order (for manual completion)
 
-1. **Workspace root** — cwd must be Nicki workspace root.
-2. **Pull** — in project git root (`nicki` → workspace root; managed → `projects/<project>`),
+1. **Workspace root** — cwd must be Shinobu workspace root.
+2. **Pull** — in project git root (`shinobu` → workspace root; managed → `projects/<project>`),
    using each project's default branch (`main` or `master` per registry):
    ```bash
    git checkout <default_branch> && git pull origin <default_branch>
@@ -64,13 +64,13 @@ On success, `create-worktree.py` prints JSON to stdout:
 ```json
 {
   "status": "complete",
-  "project": "nicki",
+  "project": "shinobu",
   "slug": "my-task",
   "branch": "chore/my-task",
-  "worktree_path": "worktrees/nicki-my-task",
-  "status_path": "worktrees/nicki-my-task/current-task/status.json",
+  "worktree_path": "worktrees/shinobu-my-task",
+  "status_path": "worktrees/shinobu-my-task/current-task/status.json",
   "task_id": "4",
-  "registry_key": "nicki:4"
+  "registry_key": "shinobu:4"
 }
 ```
 

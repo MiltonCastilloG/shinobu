@@ -47,7 +47,7 @@ def run(root: Path) -> None:
             append,
             root,
             worktree,
-            route="workflow-runtime/skills/nicki/scripts/bootstrap-context.py",
+            route="workflow-runtime/skills/shinobu/scripts/bootstrap-context.py",
             stdout='{"active_task":"t-demo"}',
             errors='["missing field: next_step"]',
         )

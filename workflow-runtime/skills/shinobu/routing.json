@@ -10,19 +10,19 @@
       "sheep": "sheep-spec",
       "artifact_key": "spec",
       "default_next_step": "gherkin",
-      "prompt": "output path (Nicki-owned; usually worktree specs/<slug>.json), task id, free text / task.original, pause path (Nicki-owned; usually worktree current-task/specs/<slug>.pause.md); on re-spawn after questions, the same pause path plus the user's answers"
+      "prompt": "output path (Shinobu-owned; usually worktree specs/<slug>.json), task id, free text / task.original, pause path (Shinobu-owned; usually worktree current-task/specs/<slug>.pause.md); on re-spawn after questions, the same pause path plus the user's answers"
     },
     "gherkin": {
       "sheep": "sheep-gherkin",
       "artifact_key": "story",
       "default_next_step": "subtasks",
-      "prompt": "spec path (Nicki-owned; usually worktree specs/<slug>.json), story output path (Nicki-owned; usually worktree current-task/story.md); not chat / interview"
+      "prompt": "spec path (Shinobu-owned; usually worktree specs/<slug>.json), story output path (Shinobu-owned; usually worktree current-task/story.md); not chat / interview"
     },
     "subtasks": {
       "sheep": "sheep-subtask",
       "artifact_key": "subtasks",
       "default_next_step": "execute",
-      "prompt": "output path (Nicki-owned; usually worktree subtasks/<slug>.md), task id, chat, pause path (Nicki-owned; usually worktree current-task/subtasks/<slug>.pause.md); on re-spawn after questions, the same pause path plus the user's answers; or existing checklist path + approved review fix lines to append ## Fix"
+      "prompt": "output path (Shinobu-owned; usually worktree subtasks/<slug>.md), task id, chat, pause path (Shinobu-owned; usually worktree current-task/subtasks/<slug>.pause.md); on re-spawn after questions, the same pause path plus the user's answers; or existing checklist path + approved review fix lines to append ## Fix"
     },
     "execute": {
       "sheep": "sheep-execute",
@@ -84,7 +84,7 @@
     "sheep": "sheep-status"
   },
   "sheep_return_contract": {
-    "description": "Every sheep ends with compact JSON. Nicki forwards the return plus --step/--mode to sheep-status. Sheep do not name pipeline position — update-status derives next_step from routing, or from summary next_step when Nicki supplies one (e.g. after review).\n",
+    "description": "Every sheep ends with compact JSON. Shinobu forwards the return plus --step/--mode to sheep-status. Sheep do not name pipeline position — update-status derives next_step from routing, or from summary next_step when Shinobu supplies one (e.g. after review).\n",
     "required_fields": [],
     "optional_fields": [
       "worktree",
@@ -108,7 +108,7 @@
     "prompt": "worktree path, failed script route, script input, expected output contract, actual failure context, blocked pipeline step",
     "scripts": {
       "bootstrap-context.py": {
-        "route": "workflow-runtime/skills/nicki/scripts/bootstrap-context.py",
+        "route": "workflow-runtime/skills/shinobu/scripts/bootstrap-context.py",
         "expected_stdout": {
           "required_fields": [
             "active_task",
@@ -126,7 +126,7 @@
             "written"
           ]
         },
-        "notes": "Nicki passes --step and --mode. next_step from routing, or summary next_step when Nicki sets it. Position-only writes need summary next_step. Missing required field → written false.\n"
+        "notes": "Shinobu passes --step and --mode. next_step from routing, or summary next_step when Shinobu sets it. Position-only writes need summary next_step. Missing required field → written false.\n"
       }
     }
   }

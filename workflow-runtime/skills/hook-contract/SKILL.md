@@ -1,12 +1,12 @@
 ---
 name: hook-contract
-description: "Hook contract for resolving Nicki task state from global-status.json and per-task status.json by task id. Use when writing Cursor hooks after Nicki knows task number."
+description: "Hook contract for resolving Shinobu task state from global-status.json and per-task status.json by task id. Use when writing Cursor hooks after Shinobu knows task number."
 disable-model-invocation: true
 ---
 
 # Hook contract — task status resolution
 
-Hooks run after Nicki knows **task id**. Resolve state with **JSON only** — no YAML parser.
+Hooks run after Shinobu knows **task id**. Resolve state with **JSON only** — no YAML parser.
 
 ## Resolution chain
 
@@ -58,6 +58,6 @@ jq -r --arg id "$TASK_ID" '.tasks[$id] | "\(.project) \(.worktree_path)"' global
 | `.cursor/hooks/enforce-agent-tools.sh` | `preToolUse` hook — reads permissions, denies disallowed tools |
 | `.cursor/hooks.json` | Registers the `preToolUse` hook |
 
-Agent identity from `subagent_type` then `agent_type` only — **not** task/description text (avoids false match on words like `nicki` in prompts). Unknown agent or unmapped tool → allow. Known agent + `false` permission → deny.
+Agent identity from `subagent_type` then `agent_type` only — **not** task/description text (avoids false match on words like `shinobu` in prompts). Unknown agent or unmapped tool → allow. Known agent + `false` permission → deny.
 
 Smoke test: `python3 test.py` (includes agent-tools smoke)

@@ -6,7 +6,7 @@ from pathlib import Path
 
 FORMAT = "workflow-runtime/skills/task-archive/archive-format.md"
 SKILL = "workflow-runtime/skills/task-archive/SKILL.md"
-NICKI = "workflow-runtime/agents/nicki.md"
+SHINOBU = "workflow-runtime/agents/shinobu.md"
 
 # Contract needles — archive drafts from these docs, so prose is the authority.
 # Sheep only points at the skill; side_effects language lives in skill + format.
@@ -16,7 +16,7 @@ NEEDLES = (
     (FORMAT, "no artifact"),
     (FORMAT, "append one `process` row per"),
     (SKILL, "side_effects"),
-    (NICKI, "--mode jump --step <target>"),
+    (SHINOBU, "--mode jump --step <target>"),
 )
 
 

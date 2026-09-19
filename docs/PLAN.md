@@ -1,5 +1,7 @@
 # Nicki — standalone workspace project plan
 
+> Describes the Nicki baseline this repository inherited at the fork, including a `nicki` CLI that was never built. Shinobu's equivalents replace it — see [`SHINOBU.md`](SHINOBU.md). Paths and filenames here are pre-fork. Rewritten if and when the PLAN CLI is picked up.
+
 **Nicki is a good dog.**
 
 This document is the rebuild guide for extracting Nicki from a host repo into its own project. Nicki becomes a repo you clone once; it manages a workspace of other git projects and orchestrates the current-task pipeline inside each project's worktrees.

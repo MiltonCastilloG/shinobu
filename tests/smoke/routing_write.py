@@ -30,7 +30,7 @@ def _status(worktree: Path) -> dict:
 def run(root: Path) -> None:
     update = script(root, "workflow-runtime/skills/current-task-update/scripts/update-status.py")
     routing = json.loads(
-        (root / "workflow-runtime/skills/nicki/routing.json").read_text(encoding="utf-8")
+        (root / "workflow-runtime/skills/shinobu/routing.json").read_text(encoding="utf-8")
     )
     steps = routing.get("steps") or {}
 
@@ -52,7 +52,7 @@ def run(root: Path) -> None:
         if (_status(wt).get("artifacts") or {}).get("spec") != "current-task/specs/foo.json":
             raise AssertionError("fail: artifact_key from routing should set artifacts.spec")
 
-        # Nicki override: summary next_step wins when present.
+        # Shinobu override: summary next_step wins when present.
         s = _summary(
             wt,
             "override.json",
@@ -91,7 +91,7 @@ def run(root: Path) -> None:
         if out.get("next_step") != "integrate":
             raise AssertionError(f"fail: second sync → integrate: {out}")
 
-        # Review defaults to acceptance; Nicki can override to execute.
+        # Review defaults to acceptance; Shinobu can override to execute.
         wt3 = tmpdir / "review"
         wt3.mkdir()
         seed = _summary(wt3, "seed.json", {})
@@ -106,7 +106,7 @@ def run(root: Path) -> None:
         fix = _summary(wt3, "fix.json", {"next_step": "execute"})
         proc, out = _write(update, root, wt3, fix, "--step", "review")
         if out.get("next_step") != "execute":
-            raise AssertionError(f"fail: Nicki next_step override after review: {out}")
+            raise AssertionError(f"fail: Shinobu next_step override after review: {out}")
 
         # Open questions keep position.
         wt4 = tmpdir / "blocked"

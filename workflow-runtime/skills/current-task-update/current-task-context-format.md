@@ -2,7 +2,7 @@
 
 > **Deprecated.** Use [status-format.md](status-format.md) (`current-task/status.json`) and [global-status-format.md](global-status-format.md) (`global-status.json`). Do not write this file for new tasks.
 
-`current-task/current-task-context.json` was the legacy task-local workflow context. It stores task identity, worktree scope, artifact paths, the current workflow step, blockers, and history so Nicki can orchestrate sheep without relying on chat memory.
+`current-task/current-task-context.json` was the legacy task-local workflow context. It stores task identity, worktree scope, artifact paths, the current workflow step, blockers, and history so Shinobu can orchestrate sheep without relying on chat memory.
 
 The file lives inside the worktree:
 
@@ -51,8 +51,8 @@ current-task/
 | `original` | Yes | Raw user task text from start (may be slug-level only) |
 | `story` | No | Gherkin-style user story — required before `spec`; written during the `describe` step |
 | `type` | No | `feature`, `fix`, `chore`, `docs`, `refactor`, `test`, or `perf` |
-| `current_step` | Yes | Step Nicki is preparing or just handed off |
-| `next_step` | Yes | Next step Nicki should propose |
+| `current_step` | Yes | Step Shinobu is preparing or just handed off |
+| `next_step` | Yes | Next step Shinobu should propose |
 | `last_completed_step` | No | Latest completed step |
 
 Do not add a broad task-level `state` enum. `current_step`, `next_step`, `last_completed_step`, `open_questions`, and `history[].status` are the source of truth.
@@ -118,7 +118,7 @@ Use paths relative to the worktree root.
 
 ## `open_questions`
 
-Use an empty list when Nicki can continue safely.
+Use an empty list when Shinobu can continue safely.
 
 ```json
 {

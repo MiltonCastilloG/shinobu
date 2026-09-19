@@ -4,11 +4,11 @@ meta:
 failures:
 - id: '2026-07-02T13:37:09Z'
   recorded_at: '2026-07-02T13:37:09Z'
-  script_route: workflow-runtime/skills/nicki/scripts/bootstrap-context.py
+  script_route: workflow-runtime/skills/shinobu/scripts/bootstrap-context.py
   input:
     argv:
     - --worktree
-    - worktrees/nicki-sheep-fallback
+    - worktrees/shinobu-sheep-fallback
     - --step
     - execute
   expected_output:

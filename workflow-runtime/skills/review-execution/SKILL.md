@@ -5,7 +5,7 @@ description: "Review worktree changes against available current-task files and t
 
 # Review Execution
 
-Review implementation in a worktree against the git diff and whatever exists under `current-task/`. Put the verdict in the sheep return `summary` for Nicki/chat. Do **not** write review JSON, validation JSON, next-steps handoffs, or mutate the subtask checklist.
+Review implementation in a worktree against the git diff and whatever exists under `current-task/`. Put the verdict in the sheep return `summary` for Shinobu/chat. Do **not** write review JSON, validation JSON, next-steps handoffs, or mutate the subtask checklist.
 
 ## Inputs
 
@@ -22,7 +22,7 @@ Review implementation in a worktree against the git diff and whatever exists und
 2. Load prompt / `current-task/` context when present.
 3. Inspect `git diff` vs main (or working tree).
 4. Check requirements / subtasks / verify commands / CONTRIBUTING when material exists.
-5. Decide pass vs fix vs re-review. Put blocking findings and suggested fix lines in `summary` (and `open_questions` when blocked). The caller (Nicki) gets user approval and, if needed, sends `sheep-subtask` to update the checklist — review never appends `## Fix` itself.
+5. Decide pass vs fix vs re-review. Put blocking findings and suggested fix lines in `summary` (and `open_questions` when blocked). The caller (Shinobu) gets user approval and, if needed, sends `sheep-subtask` to update the checklist — review never appends `## Fix` itself.
 
 ## Safety
 

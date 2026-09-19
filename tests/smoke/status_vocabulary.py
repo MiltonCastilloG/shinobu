@@ -36,7 +36,7 @@ def run(root: Path) -> None:
         raise AssertionError("fail: completed_status is back in update-status.py")
 
     routing = json.loads(
-        (root / "workflow-runtime/skills/nicki/routing.json").read_text(encoding="utf-8")
+        (root / "workflow-runtime/skills/shinobu/routing.json").read_text(encoding="utf-8")
     )
     contract = routing.get("sheep_return_contract") or {}
     if "completed_status" in json.dumps(contract):
@@ -68,7 +68,7 @@ def run(root: Path) -> None:
                     f"fail: {name} next_step {task.get('next_step')!r} != {want_next!r}"
                 )
 
-        # An explicit summary next_step is Nicki's verdict and outranks the hold.
+        # An explicit summary next_step is Shinobu's verdict and outranks the hold.
         wt = tmpdir / "verdict"
         wt.mkdir()
         s = _summary(

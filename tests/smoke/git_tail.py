@@ -19,7 +19,7 @@ RETIRED = (
     "workflow-runtime/agents/publish-task.md",
 )
 
-# Routing must keep a sheep for each git-tail step, since Nicki spawns from that value.
+# Routing must keep a sheep for each git-tail step, since Shinobu spawns from that value.
 TAIL_SHEEP = {
     "sync": "sheep-sync",
     "archive": "sheep-archive",
@@ -39,7 +39,7 @@ def run(root: Path) -> None:
             failures.append(f"fail: {rel} should be removed")
 
     steps = (
-        json.loads((root / "workflow-runtime/skills/nicki/routing.json").read_text(encoding="utf-8")).get(
+        json.loads((root / "workflow-runtime/skills/shinobu/routing.json").read_text(encoding="utf-8")).get(
             "steps"
         )
         or {}

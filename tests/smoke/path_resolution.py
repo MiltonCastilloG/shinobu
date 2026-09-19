@@ -79,7 +79,7 @@ def _scan_markdown(root: Path, failures: list[str]) -> None:
 
 
 def _scan_routing(root: Path, failures: list[str]) -> None:
-    source = root / "workflow-runtime" / "skills" / "nicki" / "routing.json"
+    source = root / "workflow-runtime" / "skills" / "shinobu" / "routing.json"
     data = json.loads(source.read_text(encoding="utf-8"))
     scripts = ((data.get("harness_failure") or {}).get("scripts")) or {}
     text = source.read_text(encoding="utf-8")

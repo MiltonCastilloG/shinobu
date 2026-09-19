@@ -3,7 +3,7 @@
   "task": {
     "id": "1",
     "slug": "status-architecture",
-    "project": "nicki",
+    "project": "shinobu",
     "original": "status-architecture",
     "type": "refactor",
     "current_step": "execute",

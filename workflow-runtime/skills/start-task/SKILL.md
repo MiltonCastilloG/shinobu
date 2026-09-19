@@ -12,7 +12,7 @@ Set up git worktrees via `create-worktree.py`. Pull `main` first. All worktrees 
 | Input | Required | Notes |
 |-------|----------|-------|
 | Work items | Yes | One or more tasks — slug-level labels are enough |
-| Project | Yes | Registry project id (`nicki` for self-tasks, or managed project name) |
+| Project | Yes | Registry project id (`shinobu` for self-tasks, or managed project name) |
 | Workspace root | Yes | Script must run from workspace root |
 
 ## Procedure
@@ -50,7 +50,7 @@ Pick a prefix and kebab-case slug for each item:
 
 **Slug rules:** lowercase, hyphens, no spaces. Derive from the description (e.g. "footer bug" → slug `footer-bug`, branch `fix/footer-bug`).
 
-**Worktree path:** `worktrees/<project>-<slug>` — single hyphen between project and slug (e.g. `worktrees/nicki-create-worktree-py`, `worktrees/tetris-clone-frp-hero-section`). Never use double hyphens or legacy `projects/*/worktrees/<slug>`.
+**Worktree path:** `worktrees/<project>-<slug>` — single hyphen between project and slug (e.g. `worktrees/shinobu-create-worktree-py`, `worktrees/tetris-clone-frp-hero-section`). Never use double hyphens or legacy `projects/*/worktrees/<slug>`.
 
 If classification is ambiguous, return the candidates as a question in `open_questions` and stop before creating worktrees.
 
@@ -60,7 +60,7 @@ From **workspace root**, run one invocation per work item:
 
 ```bash
 python3 workflow-runtime/skills/start-task/scripts/create-worktree.py \
-  --project nicki \
+  --project shinobu \
   --slug create-worktree-py \
   --type chore \
   --original "create-worktree.py scripted flow"
@@ -80,7 +80,7 @@ The script:
 1. Checks out `main` and runs `git pull` in the project git root
 2. Creates `worktrees/<project>-<slug>` (managed projects use `projects/<project>` as git root)
 3. Copies registry-declared locals (skips missing with notice)
-4. Runs `post_create` hooks from `nicki-workspace.yaml`
+4. Runs `post_create` hooks from `shinobu-workspace.yaml`
 5. Scaffolds `current-task/` with initial `status.json`
 6. Registers in `global-status.json` via `register-global-status.py` (per-project task id)
 

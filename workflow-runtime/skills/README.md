@@ -1,20 +1,20 @@
-# Nicki skills
+# Shinobu skills
 
-Skills are **pure functionality** — portable operation manuals with no knowledge of the Nicki pipeline.
+Skills are **pure functionality** — portable operation manuals with no knowledge of the Shinobu pipeline.
 
 | Layer | Owns | Who uses it |
 |-------|------|-------------|
 | **Skill** (`SKILL.md` + `*-format.md`) | How to perform one job: algorithms, schemas, safety, default output shape | Attach to do the job in your own context |
-| **Sheep** (`workflow-runtime/agents/sheep-*.md`) | Workflow binding: run one skill in isolated context, return JSON | Nicki on the pipeline; direct Task spawn for ad-hoc |
-| **Nicki** (`workflow-runtime/agents/nicki.md`) | Full pipeline, transitions, user confirmations | User says `nicki …` |
+| **Sheep** (`workflow-runtime/agents/sheep-*.md`) | Workflow binding: run one skill in isolated context, return JSON | Shinobu on the pipeline; direct Task spawn for ad-hoc |
+| **Shinobu** (`workflow-runtime/agents/shinobu.md`) | Full pipeline, transitions, user confirmations | User says `shinobu …` |
 
 Pipeline leaf skills: `story-maker`, `spec-maker`, `subtask-maker`, `execute-plan`, `review-execution`, …
 
 ## Invocation policy
 
 1. **Ad-hoc work** — Task-spawn the sheep directly (instructions + output path, default `docs/adhoc/`), or attach the skill when you want the work in your own context. No task or status write either way.
-2. **Nicki-only sheep** — `sheep-start`, `sheep-close`, `sheep-status` own the registry and per-task status; never spawn them ad-hoc.
-3. **Nicki sends sheep** — full current-task workflow goes through Nicki (`nicki fetch`, `nicki continue`, …).
+2. **Shinobu-only sheep** — `sheep-start`, `sheep-close`, `sheep-status` own the registry and per-task status; never spawn them ad-hoc.
+3. **Shinobu sends sheep** — full current-task workflow goes through Shinobu (`shinobu fetch`, `shinobu continue`, …).
 4. **Workflow-only skills stay internal** — `current-task-update`, `close-task`, `close-scope`, `task-archive`, `hook-contract`, `validation` keep `disable-model-invocation: true`.
 
 ## Rules

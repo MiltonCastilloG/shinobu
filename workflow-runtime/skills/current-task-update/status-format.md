@@ -34,8 +34,8 @@ Document bodies live as separate files; status holds **position**, document **po
 | `title` | No | Short title |
 | `original` | Yes | Short slug or one-line title after gherkin; start slug until then |
 | `type` | No | `feature`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf` |
-| `current_step` | Yes | Step Nicki is on or just completed |
-| `next_step` | Yes | Next step Nicki should propose — **workflow source of truth** |
+| `current_step` | Yes | Step Shinobu is on or just completed |
+| `next_step` | Yes | Next step Shinobu should propose — **workflow source of truth** |
 | `side_effects` | No | Append-only log of jump runs |
 
 Step values: `start`, `spec`, `gherkin`, `subtasks`, `execute`, `review`, `fix`, `acceptance`, `sync`, `archive`, `integrate`, `close`, `done`.
@@ -73,7 +73,7 @@ No `sync` / `integrate` / `review_validation` / `review_input` pointers.
 
 ## `open_questions`
 
-Empty when Nicki can continue. **Non-empty holds `next_step` where it was** — that is the whole blocked mechanism; there is no status field for it.
+Empty when Shinobu can continue. **Non-empty holds `next_step` where it was** — that is the whole blocked mechanism; there is no status field for it.
 
 A sheep cannot reach a human, so this is also how it asks. One entry per question. `question` is the only required key; `options` lets the caller offer a choice instead of an essay prompt, and `context` says what the sheep found that raised it. No schema, no validator — the reader is an LLM.
 
@@ -92,7 +92,7 @@ A plain string is accepted too, for questions that need no options.
 
 ## Acceptance / fix / review outcomes
 
-Nicki sets `next_step` from chat and the sheep summary (e.g. after review → `acceptance` or `execute`). No readiness file on disk.
+Shinobu sets `next_step` from chat and the sheep summary (e.g. after review → `acceptance` or `execute`). No readiness file on disk.
 
 ## Spec `open_questions` gate
 
