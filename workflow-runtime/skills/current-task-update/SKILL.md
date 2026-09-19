@@ -18,7 +18,7 @@ Schemas:
 
 ## When to use
 
-- Shinobu completed `start`, `spec`, `gherkin`, `subtasks`, `execute`, `review`, `acceptance`, `sync`, `integrate`, or fix-loop routing.
+- Shinobu completed `start`, `spec`, `gherkin`, `review`, `acceptance`, `sync`, or `integrate`.
 - Shinobu needs next step, artifact pointers, or open questions persisted.
 - Worktree exists; need init missing `current-task/status.json`.
 
@@ -49,7 +49,7 @@ On `normal`, `next_step` is derived via `routing_write.next_step_for()` (includi
 git tail and review readiness). On `jump`, `--step` is the **target** sheep step:
 `next_step` becomes the target and `current_step` is left untouched — no summary
 `artifact` required or materialized. Artifact pointers on normal writes use
-routing's `artifact_key` (execute has none).
+routing's `artifact_key` (operational steps have none).
 
 Minimal write (valid — advances next step only):
 
@@ -121,7 +121,6 @@ Emit simplified shape on every write. **Legacy migration:** when loading v1 stat
 - `task.current_step`, `task.next_step` — drop legacy `task.completed_steps` if present
 - Merge `artifacts`; review writes no file and sets no pointer
 - **Describe:** replace `task.original` with slug or one-line title; set `artifacts.story`
-- Fix-loop: when `--step fix` or review reruns after fix, routing derives `next_step` back to `execute`
 - Acceptance: when `--step acceptance`, set `current_step` and derive `next_step` to `sync`; reject may populate `open_questions`
 - **Jump (`--mode jump`):** set `next_step` to the target, leave `current_step` untouched, append one `task.side_effects` entry. Needs an existing `status.json` — jump never initialises a task.
 - `open_questions` from summary; blocked when non-empty

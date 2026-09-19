@@ -15,20 +15,8 @@
     "gherkin": {
       "sheep": "sheep-gherkin",
       "artifact_key": "story",
-      "default_next_step": "subtasks",
-      "prompt": "spec path (Shinobu-owned; usually worktree specs/<slug>.json), story output path (Shinobu-owned; usually worktree current-task/story.md); not chat / interview"
-    },
-    "subtasks": {
-      "sheep": "sheep-subtask",
-      "artifact_key": "subtasks",
-      "default_next_step": "execute",
-      "prompt": "output path (Shinobu-owned; usually worktree subtasks/<slug>.md), task id, chat, pause path (Shinobu-owned; usually worktree current-task/subtasks/<slug>.pause.md); on re-spawn after questions, the same pause path plus the user's answers; or existing checklist path + approved review fix lines to append ## Fix"
-    },
-    "execute": {
-      "sheep": "sheep-execute",
-      "artifact_key": null,
       "default_next_step": "review",
-      "prompt": "worktree path, task id, chat"
+      "prompt": "spec path (Shinobu-owned; usually worktree specs/<slug>.json), story output path (Shinobu-owned; usually worktree current-task/story.md); not chat / interview"
     },
     "review": {
       "sheep": "sheep-review",
@@ -40,12 +28,6 @@
       "sheep": null,
       "artifact_key": null,
       "default_next_step": "sync",
-      "prompt": null
-    },
-    "fix": {
-      "sheep": null,
-      "artifact_key": null,
-      "default_next_step": "execute",
       "prompt": null
     },
     "sync": {

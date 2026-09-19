@@ -6,15 +6,14 @@
     "project": "shinobu",
     "original": "status-architecture",
     "type": "refactor",
-    "current_step": "execute",
-    "next_step": "review"
+    "current_step": "review",
+    "next_step": "acceptance"
   },
   "scope": {
     "worktree_path": "."
   },
   "artifacts": {
-    "spec": "00-spec.json",
-    "subtasks": "00-subtasks.md"
+    "spec": "00-spec.json"
   },
   "open_questions": []
 }

@@ -20,7 +20,7 @@ def _append(append: Path, root: Path, worktree: Path, *, route: str, stdout: str
         "--script-route",
         route,
         "--input",
-        '{"argv":["--worktree","worktrees/demo","--step","execute"]}',
+        '{"argv":["--worktree","worktrees/demo","--step","review"]}',
         "--expected-output",
         '{"required_fields":["active_task","status_path","current_step","next_step","sheep"]}',
         "--exit-code",

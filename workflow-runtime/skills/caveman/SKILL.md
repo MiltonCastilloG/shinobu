@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Caveman
 
-Terse prose for workflow Markdown (subtasks, story, archive reports). Technical terms stay exact.
+Terse prose for workflow Markdown (story, archive reports). Technical terms stay exact.
 
 Default: **lite**. Switch: `/caveman lite|full`. Off: `stop caveman` / `normal mode`.
 

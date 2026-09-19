@@ -110,18 +110,18 @@ and the smokes on every push.
 ## Pipeline
 
 ```
-start → spec → gherkin → subtasks → execute → review → [fix] → acceptance → sync → archive → sync → integrate → close
+start → spec → gherkin → review → acceptance → sync → archive → sync → integrate → close
 ```
 
 Post-review routing comes from the review sheep's return `summary`, not from a file on disk:
 
 | Verdict | Next |
 | ------- | ---- |
-| fixes required | Shinobu asks approval of the suggested fix lines → `sheep-subtask` appends `## Fix` → `execute` again |
+| changes required | Shinobu relays the verdict; with approval, jumps to `gherkin` to append a scenario (or to `spec` when the spec is wrong) |
 | ready | Shinobu `acceptance` checkpoint — sync blocked until user accepts |
 | blocked | Shinobu asks user |
 
-Shinobu-only steps: `acceptance`, `fix`.
+Shinobu-only step: `acceptance`.
 
 `sheep-start` / `sheep-close` own `global-status.json`; `sheep-status` owns per-task `status.json`.
 

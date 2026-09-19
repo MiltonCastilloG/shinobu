@@ -1,10 +1,10 @@
 # Spec format
 
-**JSON only** — spec-maker writes this schema. Subtask-maker reads via [spec-input.md](../subtask-maker/spec-input.md).
+**JSON only** — spec-maker writes this schema.
 
 Default path: `current-task/specs/<slug>.json` under the worktree scope root.
 
-Specs define **what** to build (requirements, scope, acceptance). They do **not** name implementation subtasks or file paths.
+Specs define **what** to build (requirements, scope, acceptance). They do **not** name implementation steps or file paths.
 
 ## Top-level fields
 
@@ -19,7 +19,7 @@ Specs define **what** to build (requirements, scope, acceptance). They do **not*
 | `constraints` | No | Rules for downstream work (e.g. `no-commit`, `no-new-deps`) |
 | `acceptance` | Yes | Testable criteria for done |
 | `assumptions` | No | Defaults applied when the task was silent |
-| `open_questions` | No | Unresolved decisions — must be empty before subtask breakdown |
+| `open_questions` | No | Unresolved decisions — must be empty before the story is written |
 
 ## `meta` block
 
@@ -115,9 +115,9 @@ Each item in `requirements`:
 
 **Don't:**
 
-- Name file paths or implementation subtasks
+- Name file paths or implementation steps
 - Use vague verbs without measurable outcomes (`improve`, `modernize`, `clean up`)
-- Duplicate subtask-level or execution detail (commands, step order, create/modify actions)
+- Duplicate implementation detail (commands, step order, create/modify actions)
 - Leave silent on constraints — default to `no-commit` and `no-new-deps` unless the task requires otherwise
 
 ## Ambiguity → stop

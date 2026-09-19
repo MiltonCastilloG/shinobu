@@ -20,7 +20,7 @@ Output reviews still have only `approved` and `content`.
 ```json
 {
   "approved": false,
-  "content": "Prior review mixed scope notes with blockers. Rerun with spec and subtasks.\n",
+  "content": "Prior review mixed scope notes with blockers. Rerun with spec and story.\n",
   "important-considerations": [
     "Do not block on footer redesign; footer is outside scope.in.",
     "Still report verify and convention failures."

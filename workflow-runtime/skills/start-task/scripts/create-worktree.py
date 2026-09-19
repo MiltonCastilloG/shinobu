@@ -444,7 +444,7 @@ def scaffold_current_task(
         return status_rel
     wt_root = workspace / wt_rel
     ct = wt_root / "current-task"
-    for sub in ("specs", "subtasks"):
+    for sub in ("specs",):
         (ct / sub).mkdir(parents=True, exist_ok=True)
     status = {
         "meta": {"schema": "task-status.v2"},

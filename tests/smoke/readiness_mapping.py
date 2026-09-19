@@ -14,11 +14,11 @@ def run(root: Path) -> None:
         raise AssertionError("fail: readiness_routing must be removed")
 
     steps = routing.get("steps") or {}
-    for name in ("review", "sync", "integrate", "execute", "acceptance", "fix", "close"):
+    for name in ("review", "sync", "integrate", "acceptance", "close"):
         if (steps.get(name) or {}).get("artifact_key"):
             raise AssertionError(f"fail: {name} must not declare artifact_key")
 
-    for name in ("gherkin", "spec", "subtasks", "archive"):
+    for name in ("gherkin", "spec", "archive"):
         if not (steps.get(name) or {}).get("artifact_key"):
             raise AssertionError(f"fail: document step {name} needs artifact_key")
 

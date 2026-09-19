@@ -1,9 +1,0 @@
-{
-  "readiness": {
-    "status": "fix_required",
-    "recommended_next_step": "execute",
-    "blockers": [
-      "npm run lint failed: unused import in Hero.tsx"
-    ]
-  }
-}

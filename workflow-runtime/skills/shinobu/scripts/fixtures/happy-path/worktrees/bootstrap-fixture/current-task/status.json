@@ -2,14 +2,13 @@
   "meta": { "schema": "task-status.v2" },
   "task": {
     "slug": "bootstrap-fixture",
-    "current_step": "subtasks",
-    "next_step": "execute"
+    "current_step": "gherkin",
+    "next_step": "review"
   },
   "scope": { "worktree_path": "worktrees/bootstrap-fixture" },
   "artifacts": {
     "story": "current-task/story.md",
-    "spec": "current-task/specs/bootstrap-fixture.json",
-    "subtasks": "current-task/subtasks/bootstrap-fixture.md"
+    "spec": "current-task/specs/bootstrap-fixture.json"
   },
   "open_questions": []
 }

@@ -32,11 +32,9 @@ def run(root: Path) -> None:
 
     _check(resolve, "start", {}, "spec", "start → spec")
     _check(resolve, "spec", empty, "gherkin", "spec → gherkin")
-    _check(resolve, "gherkin", empty, "subtasks", "gherkin → subtasks")
-    _check(resolve, "execute", empty, "review", "execute → review")
+    _check(resolve, "gherkin", empty, "review", "gherkin → review")
     _check(resolve, "review", empty, "acceptance", "review → acceptance")
     _check(resolve, "acceptance", empty, "sync", "acceptance → sync")
-    _check(resolve, "fix", empty, "execute", "fix → execute")
     _check(resolve, "archive", empty, "sync", "archive → sync (second pass)")
     _check(resolve, "integrate", empty, "close", "integrate → close")
 

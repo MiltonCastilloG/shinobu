@@ -44,7 +44,7 @@ Task Progress:
 
 - **Read** anywhere under the scope root and CONTRIBUTING.md.
 - **Write** only to the spec output path (create parent directory if missing).
-- Never edit `src/`, `app/`, config, tests, subtask files, or any application files.
+- Never edit `src/`, `app/`, config, tests, or any application files.
 - Never modify files outside the scope root.
 
 ### Step 2: Parse task description
@@ -66,7 +66,7 @@ Use read, grep, glob, or semantic_search **lightly** to bound scope realisticall
 
 - Read the project's `CONTRIBUTING.md` when present — missing file OK; record assumptions inline in spec
 - Skim top-level layout (`app/`, `src/components/`, `src/features/`) to know what areas exist
-- Do **not** explore file-by-file or draft implementation subtasks
+- Do **not** explore file-by-file or draft implementation steps
 
 ### Step 4: Draft the JSON spec
 
@@ -89,7 +89,6 @@ Include:
 
 - Name file paths or symbols
 - Include create/modify/delete/run/verify steps
-- Write implementation subtasks
 - Guess on design forks — return them in `open_questions` and stop
 
 ### Step 5: Write the spec file
@@ -114,7 +113,6 @@ Summarize:
 ## Safety rules
 
 - Never edit application code — only the spec JSON file
-- Never write subtask files
 - Never modify files outside the scope root
 - Never force-push, `reset --hard`, or delete worktrees/branches without explicit user approval
 - Do not commit or push unless the user explicitly asks

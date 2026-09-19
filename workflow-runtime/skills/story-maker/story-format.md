@@ -4,7 +4,7 @@
 
 The caller packs the output path (usually `current-task/story.md` under the worktree).
 
-Stories define **what** to build as checkable scenarios. They do **not** name implementation subtasks or file paths.
+Stories define **what** to build as checkable scenarios. They do **not** name implementation steps or file paths.
 
 ## File structure
 

@@ -27,8 +27,8 @@ Review guidance files use review JSON plus one extra input-only key. See [review
 
 ## `approved`
 
-- `true` — requirements met, subtasks satisfied, verify passed, no blocking convention violations. `[scope]` notes allowed.
-- `false` — one or more **blocking** issues (`[req-`, `[subtask:`, `[verify]`, `[convention]`). `[scope]` alone does not require `false`.
+- `true` — requirements met, verify passed, no blocking convention violations. `[scope]` notes allowed.
+- `false` — one or more **blocking** issues (`[req-`, `[verify]`, `[convention]`). `[scope]` alone does not require `false`.
 
 ## `content`
 
@@ -41,7 +41,7 @@ Brief pass summary (2–5 lines). Mention requirements coverage, verify results,
 ```json
 {
   "approved": true,
-  "content": "All spec requirements met (hero-headline, hero-subcopy, hero-cta, hero-tokens).\nChecked subtasks for Hero implementation and page wiring are complete.\nVerify: npm run lint and npm test -- Hero passed.\nNo files changed outside spec scope.\n"
+  "content": "All spec requirements met (hero-headline, hero-subcopy, hero-cta, hero-tokens).\nVerify: npm run lint and npm test -- Hero passed.\nNo files changed outside spec scope.\n"
 }
 ```
 
@@ -52,7 +52,6 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 | Prefix | Use for |
 |--------|---------|
 | `[req-<id>]` | Spec requirement not met |
-| `[subtask:<index>]` | Checked subtask not done or done incorrectly |
 | `[scope]` | Change outside spec `scope.out` — **non-blocking**; name it in the summary as deferred work |
 | `[verify]` | Lint, test, build, or other check failure |
 | `[convention]` | CONTRIBUTING rule violation (tokens, i18n, deps) |
@@ -60,7 +59,7 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 ```json
 {
   "approved": false,
-  "content": "[req-hero-cta] Hero component has no CTA button — only headline and subcopy rendered.\n[subtask:2] app/page.tsx still imports LandingBanner; Hero not wired in.\n[verify] npm run lint failed: src/components/Hero/Hero.tsx — unused import 'Link'.\n[scope] src/components/Footer/Footer.tsx modified — outside spec scope.out.\n"
+  "content": "[req-hero-cta] Hero component has no CTA button — only headline and subcopy rendered.\n[verify] npm run lint failed: src/components/Hero/Hero.tsx — unused import 'Link'.\n[scope] src/components/Footer/Footer.tsx modified — outside spec scope.out.\n"
 }
 ```
 
@@ -68,14 +67,14 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 
 **Do:**
 
-- Reference spec requirement IDs and subtask indices when applicable
+- Reference spec requirement IDs when applicable
 - Name exact file paths for code and scope issues
 - Paste or summarize verify command failures with enough context to reproduce
 - Keep bullets specific and testable
 
 **Don't:**
 
-- Suggest fixes or checklist rewrites — only report what failed review
+- Suggest fixes — only report what failed review
 - Include non-blocking nits unless strict review was requested
 - Add keys beyond `approved` and `content`
 
@@ -83,7 +82,7 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 
 You cannot reach a human. Return the question in `open_questions` and stop — no verdict — when:
 
-- Spec or subtask list is missing and partial review is insufficient
+- Spec or story is missing and partial review is insufficient
 - A requirement is subjective and pass/fail is unclear
 - Verify commands cannot run (missing deps, wrong branch base)
 - Git history makes change discovery unreliable

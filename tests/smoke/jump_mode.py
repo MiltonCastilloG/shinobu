@@ -38,7 +38,7 @@ def run(root: Path) -> None:
     with tempfile.TemporaryDirectory() as tmp:
         tmpdir = Path(tmp)
 
-        wt = tmpdir / "to-subtasks"
+        wt = tmpdir / "to-spec"
         wt.mkdir()
         _put(wt / "current-task/story.md", "# Story\n")
         seed = _summary(
@@ -63,12 +63,14 @@ def run(root: Path) -> None:
             if p.is_file()
         }
 
-        # No summary artifact — jump still succeeds; current_step unchanged.
+        # Jump back to spec (the spec was wrong): no summary artifact, jump still
+        # succeeds, next_step is the target rather than routing's review, and
+        # current_step is unchanged.
         jump = _summary(wt, "jump.json", {"open_questions": []})
-        proc, out = _write(update, root, wt, jump, "--step", "subtasks", "--mode", "jump")
+        proc, out = _write(update, root, wt, jump, "--step", "spec", "--mode", "jump")
         if proc.returncode != 0 or out.get("written") is not True:
             raise AssertionError(f"fail: jump write: {proc.stdout}{proc.stderr}")
-        if out.get("next_step") != "subtasks":
+        if out.get("next_step") != "spec":
             raise AssertionError(f"fail: jump should set next_step to target: {out}")
 
         after = _status(wt)
@@ -77,8 +79,8 @@ def run(root: Path) -> None:
                 f"fail: current_step must be byte-identical "
                 f"({before_current!r} → {(after.get('task') or {}).get('current_step')!r})"
             )
-        if (after.get("task") or {}).get("next_step") != "subtasks":
-            raise AssertionError(f"fail: next_step should be subtasks: {after.get('task')}")
+        if (after.get("task") or {}).get("next_step") != "spec":
+            raise AssertionError(f"fail: next_step should be spec: {after.get('task')}")
         if dict(after.get("artifacts") or {}) != before_arts:
             raise AssertionError("fail: jump must not register artifact pointers")
 
@@ -105,29 +107,33 @@ def run(root: Path) -> None:
         if proc.returncode != 1:
             raise AssertionError(f"fail: jump close should be rejected: {out}")
 
-        # Execute normal write with omitted artifact does not create executions/*.json.
-        wt2 = tmpdir / "no-execution"
+        # Operational normal write (review) with omitted artifact registers no
+        # pointer and materializes no handoff file under current-task/.
+        wt2 = tmpdir / "no-handoff"
         wt2.mkdir()
         seed2 = _summary(
             wt2,
             "seed.json",
             {
-                "completed_step": "subtasks",
-                "artifact": "current-task/subtasks/x.md",
+                "completed_step": "gherkin",
+                "artifact": "current-task/story.md",
                 "task": {"slug": "x", "original": "x"},
             },
         )
-        _put(wt2 / "current-task/subtasks/x.md", "- [ ] a\n")
-        proc, _ = _write(update, root, wt2, seed2, "--step", "subtasks")
+        _put(wt2 / "current-task/story.md", "- [ ] a\n")
+        proc, _ = _write(update, root, wt2, seed2, "--step", "gherkin")
         if proc.returncode != 0:
             raise AssertionError(f"fail: seed2: {proc.stdout}{proc.stderr}")
-        exe = _summary(wt2, "exe.json", {"open_questions": []})
-        proc, out = _write(update, root, wt2, exe, "--step", "execute")
+        arts_before = dict(_status(wt2).get("artifacts") or {})
+        tree_before = {p.relative_to(wt2).as_posix() for p in (wt2 / "current-task").rglob("*") if p.is_file()}
+        rev = _summary(wt2, "review.json", {"open_questions": []})
+        proc, out = _write(update, root, wt2, rev, "--step", "review")
         if proc.returncode != 0 or out.get("written") is not True:
-            raise AssertionError(f"fail: execute omit artifact: {proc.stdout}{proc.stderr}")
-        if (_status(wt2).get("artifacts") or {}).get("execution"):
-            raise AssertionError("fail: execute must not set artifacts.execution")
-        if (wt2 / "current-task/executions").exists():
-            raise AssertionError("fail: execute must not create executions/")
+            raise AssertionError(f"fail: review omit artifact: {proc.stdout}{proc.stderr}")
+        if dict(_status(wt2).get("artifacts") or {}) != arts_before:
+            raise AssertionError("fail: review must not set any artifact pointer")
+        tree_after = {p.relative_to(wt2).as_posix() for p in (wt2 / "current-task").rglob("*") if p.is_file()}
+        if tree_after != tree_before:
+            raise AssertionError(f"fail: review must not create handoff files: {tree_after - tree_before}")
 
     print("smoke-jump-mode: ok")

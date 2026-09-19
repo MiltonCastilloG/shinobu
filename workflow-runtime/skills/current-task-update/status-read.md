@@ -10,7 +10,7 @@ Per-task `current-task/status.json`. Writer schema: [status-format.md](status-fo
 |---------|--------|
 | `task` | `slug`, `title`, `original`, `current_step`, `next_step` |
 | `scope` | `worktree_path` |
-| `artifacts` | Document paths: story, spec, subtasks, archive |
+| `artifacts` | Document paths: story, spec, archive |
 | `open_questions` | Blockers |
 
 ## Minimal shape
@@ -21,7 +21,7 @@ Per-task `current-task/status.json`. Writer schema: [status-format.md](status-fo
     "slug": "hero-section",
     "original": "hero-section",
     "current_step": "gherkin",
-    "next_step": "subtasks"
+    "next_step": "review"
   },
   "scope": {
     "worktree_path": "worktrees/castlemill-landing-hero-section"

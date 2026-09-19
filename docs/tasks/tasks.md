@@ -27,10 +27,10 @@ One worker session per job. The architect session owns this file; a worker flips
 | # | Job | Depends on | Runs with | Status |
 |---|-----|-----------|-----------|--------|
 | **S1** | Identity rename — `nicki` → `shinobu` for the orchestrator, rule, routing/bootstrap folder, config/workspace/version filenames, installers, permissions keys, smokes, README | — | alone | done |
-| **S2** | Remove the Nicki tail — `sheep-subtask`, `sheep-execute`, `subtask-maker`, `execute-plan`, `validation`; routing steps `subtasks`/`execute`/`fix`; `current-task/subtasks/`; the smokes that assert them | S1 | alone | **next** |
-| **S3a** | `sheep-red` + `sheep-green` and their skills (`red-test`, `green-implementation`) | S2 | **∥ S3b, S3c** | todo |
-| **S3b** | `sheep-green-refactor` + `sheep-red-refactor` and their skills. Serial at runtime — green-refactor on the post-loop diff, then red-refactor on what it leaves. **Settles the open refactor-scope question** — each SKILL.md states its own write domain | S2 | **∥ S3a, S3c** | todo |
-| **S3c** | Review hardening — `sheep-review` + `review-execution` gain two named duties: full-suite **regression** check, and **scenario compliance** against every `- [x]` in `story.md` | S2 | **∥ S3a, S3b** | todo |
+| **S2** | Remove the Nicki tail — `sheep-subtask`, `sheep-execute`, `subtask-maker`, `execute-plan`, `validation`; routing steps `subtasks`/`execute`/`fix`; `current-task/subtasks/`; the smokes that assert them | S1 | alone | done |
+| **S3a** | `sheep-red` + `sheep-green` and their skills (`red-test`, `green-implementation`) | S2 | **∥ S3b, S3c** | **next** |
+| **S3b** | `sheep-green-refactor` + `sheep-red-refactor` and their skills. Serial at runtime — green-refactor on the post-loop diff, then red-refactor on what it leaves. **Settles the open refactor-scope question** — each SKILL.md states its own write domain | S2 | **∥ S3a, S3c** | **next** |
+| **S3c** | Review hardening — `sheep-review` + `review-execution` gain two named duties: full-suite **regression** check, and **scenario compliance** against every `- [x]` in `story.md` | S2 | **∥ S3a, S3b** | **next** |
 | **S4** | Loop + routing + status — `shinobu.md` orchestration, loop-back while `story.md` has `- [ ]`, then `green-refactor` → `red-refactor` → `review` as four ordinary steps, the four new permission keys | S3a, S3b, S3c | alone | todo |
 | **S5** | Shinobu smokes — loop cursor while scenarios remain, loop exit, red-failure `open_questions` hold, refactor step order | S4 | **∥ S7** | todo |
 | **S7** | Docs — README pipeline + layout, `NICKI.md` → Shinobu semantics, `WORKFLOW-DIAGRAMS.md`, `OWNERSHIP.md` fork-action column | S4 | **∥ S5** | todo |

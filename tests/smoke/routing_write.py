@@ -52,18 +52,20 @@ def run(root: Path) -> None:
         if (_status(wt).get("artifacts") or {}).get("spec") != "current-task/specs/foo.json":
             raise AssertionError("fail: artifact_key from routing should set artifacts.spec")
 
-        # Shinobu override: summary next_step wins when present.
+        # Shinobu override: summary next_step wins when present (routing says review).
         s = _summary(
             wt,
             "override.json",
             {
-                "next_step": "execute",
-                "artifact": "current-task/subtasks/foo.md",
+                "next_step": "spec",
+                "artifact": "current-task/story.md",
             },
         )
-        proc, out = _write(update, root, wt, s, "--step", "subtasks")
-        if out.get("next_step") != "execute":
+        proc, out = _write(update, root, wt, s, "--step", "gherkin")
+        if out.get("next_step") != "spec":
             raise AssertionError(f"fail: summary next_step should win: {out}")
+        if (_status(wt).get("artifacts") or {}).get("story") != "current-task/story.md":
+            raise AssertionError("fail: artifact_key from routing should set artifacts.story")
 
         # Git tail: first sync → archive; second sync (archive set) → integrate.
         wt2 = tmpdir / "git-tail"
@@ -91,11 +93,11 @@ def run(root: Path) -> None:
         if out.get("next_step") != "integrate":
             raise AssertionError(f"fail: second sync → integrate: {out}")
 
-        # Review defaults to acceptance; Shinobu can override to execute.
+        # Review defaults to acceptance; Shinobu can override to gherkin (new scenario).
         wt3 = tmpdir / "review"
         wt3.mkdir()
-        seed = _summary(wt3, "seed.json", {})
-        _write(update, root, wt3, seed, "--step", "execute")
+        seed = _summary(wt3, "seed.json", {"artifact": "current-task/story.md"})
+        _write(update, root, wt3, seed, "--step", "gherkin")
         rev = _summary(wt3, "review.json", {})
         proc, out = _write(update, root, wt3, rev, "--step", "review")
         if out.get("next_step") != "acceptance":
@@ -103,9 +105,9 @@ def run(root: Path) -> None:
         if (_status(wt3).get("artifacts") or {}).get("review_validation"):
             raise AssertionError("fail: review must not set review_validation")
 
-        fix = _summary(wt3, "fix.json", {"next_step": "execute"})
-        proc, out = _write(update, root, wt3, fix, "--step", "review")
-        if out.get("next_step") != "execute":
+        changes = _summary(wt3, "changes.json", {"next_step": "gherkin"})
+        proc, out = _write(update, root, wt3, changes, "--step", "review")
+        if out.get("next_step") != "gherkin":
             raise AssertionError(f"fail: Shinobu next_step override after review: {out}")
 
         # Open questions keep position.
@@ -123,7 +125,7 @@ def run(root: Path) -> None:
             "blocked.json",
             {"open_questions": [{"question": "which CTA?"}]},
         )
-        proc, out = _write(update, root, wt4, blocked, "--step", "subtasks")
+        proc, out = _write(update, root, wt4, blocked, "--step", "gherkin")
         after = (_status(wt4).get("task") or {}).get("next_step")
         if after != before:
             raise AssertionError(f"fail: blocked must not advance next_step ({before} → {after})")
@@ -145,7 +147,7 @@ def run(root: Path) -> None:
             for name, cfg in steps.items()
             if cfg.get("artifact_key")
         }
-        if set(declared) != {"gherkin", "spec", "subtasks", "archive"}:
+        if set(declared) != {"gherkin", "spec", "archive"}:
             raise AssertionError(f"fail: unexpected artifact_key map: {declared}")
         if declared.get("review") or declared.get("sync") or declared.get("integrate"):
             raise AssertionError("fail: operational steps must not declare artifact_key")

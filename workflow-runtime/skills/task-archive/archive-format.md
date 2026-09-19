@@ -11,7 +11,7 @@
 <prefix>/docs/archive/<slug>/errors.json   # verbatim copy when the caller named an errors path
 ```
 
-Spec and subtask paths from status are **not** archived — delete from worktree after copy (see [task-archive/SKILL.md](SKILL.md) step 6).
+The spec path from status is **not** archived — delete from worktree after copy (see [task-archive/SKILL.md](SKILL.md) step 6).
 
 ## Load inputs
 
@@ -26,15 +26,12 @@ Caller packs the paths. Task archive: read `current-task/status.json` — [statu
 |------|------------------|----------------|
 | `gherkin` | `artifacts.story` | story exists → brief line from story title or slug |
 | `spec` | `artifacts.spec` | `meta.summary` or spec `title` |
-| `subtasks` | `artifacts.subtasks` | subtask frontmatter `title` |
-| `execute` | (none — execute omits artifact) | skip |
 | `review` | (none — review writes no file) | verdict as relayed in chat |
 | `sync` | (none) | branch pushed |
 | `integrate` | (none) | target branch merged |
 
 ```json
 "process": [
-  {"step": "execute", "summary": "Subtasks in progress."},
   {"step": "sync", "summary": "Feature branch pushed."},
   {"step": "review", "summary": "jump review at 2026-07-30T12:00:00Z — no artifact"}
 ]
@@ -87,8 +84,8 @@ Summarize handoffs — never paste full bodies, logs, diffs, transcripts, secret
   "open_questions": [],
   "suggestions": [
     {
-      "area": "subtasking",
-      "suggestion": "Put CTA in spec before subtasks.",
+      "area": "spec",
+      "suggestion": "Put CTA in spec before gherkin.",
       "evidence": "open_questions had CTA during spec."
     }
   ]
@@ -97,13 +94,13 @@ Summarize handoffs — never paste full bodies, logs, diffs, transcripts, secret
 
 ## suggestions
 
-Scan: `open_questions`, blockers, triage, review inputs, push/merge conflicts, skipped subtasks.
+Scan: `open_questions`, blockers, triage, review inputs, push/merge conflicts.
 
 ```json
 {
   "suggestions": [
     {
-      "area": "spec | subtasking | execute | review | push | merge | orchestration",
+      "area": "spec | gherkin | review | push | merge | orchestration",
       "suggestion": "One actionable next-time fix.",
       "evidence": "artifact path or short quote"
     }

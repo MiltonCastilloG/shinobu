@@ -88,7 +88,7 @@ def run(root: Path) -> None:
         # completed step: a second blocked write does not walk the task backwards.
         wt = tmpdir / "rehold"
         wt.mkdir()
-        seed = _summary(wt, "seed.json", {"completed_step": "execute"})
+        seed = _summary(wt, "seed.json", {"completed_step": "gherkin"})
         proc, out = _write(update, root, wt, seed)
         if proc.returncode != 0 or out.get("next_step") != "review":
             raise AssertionError(f"fail: seed write: {out}{proc.stderr}")
@@ -107,7 +107,7 @@ def run(root: Path) -> None:
             wt,
             "seed.json",
             {
-                "completed_step": "execute",
+                "completed_step": "gherkin",
                 "next_step": "review",
             },
         )

@@ -2,7 +2,7 @@
 
 Path: `current-task/specs/errors.json` under the active worktree.
 
-Append-only diagnostic artifact — separate from task requirements spec and subtasks.
+Append-only diagnostic artifact — separate from the task spec and story.
 
 ## Top-level
 

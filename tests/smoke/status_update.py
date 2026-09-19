@@ -19,7 +19,7 @@ def run(root: Path) -> None:
             json.dumps(
                 {
                     "completed_step": "spec",
-                    "next_step": "subtasks",
+                    "next_step": "gherkin",
                     "artifact": "current-task/specs/foo.json",
                     "open_questions": [],
                 },
@@ -37,7 +37,7 @@ def run(root: Path) -> None:
         out = json.loads(proc.stdout.strip())
         if out.get("written") is not True:
             raise AssertionError("fail: expected written true")
-        if out.get("completed_step") != "spec" or out.get("next_step") != "subtasks":
+        if out.get("completed_step") != "spec" or out.get("next_step") != "gherkin":
             raise AssertionError("fail: unexpected step fields")
 
         val = run_py(

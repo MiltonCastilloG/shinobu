@@ -10,7 +10,6 @@ The file lives inside the worktree:
 current-task/
   status.json
   specs/<slug>.json
-  subtasks/<slug>.md
   reviews/<slug>.json
   review-validations/rN-validation.json
   review-inputs/rN-review.json
@@ -79,11 +78,8 @@ Step values:
 - `start`
 - `describe`
 - `spec`
-- `subtasks`
-- `execute`
 - `review`
 - `triage`
-- `fix`
 - `commit`
 - `push`
 - `merge`
@@ -107,7 +103,6 @@ Use paths relative to the worktree root.
 |-------|----------|-------------|
 | `context` | Yes | `current-task/status.json` |
 | `spec` | No | `current-task/specs/<slug>.json` |
-| `subtasks` | No | `current-task/subtasks/<slug>.md` |
 | `review` | No | `current-task/reviews/<slug>.json` |
 | `review_validation` | No | Latest `current-task/review-validations/rN-validation.json` |
 | `review_input` | No | Latest `current-task/review-inputs/rN-review.json` |
@@ -132,7 +127,7 @@ When blocked, keep entries compact and actionable:
 {
   "open_questions": [
     {
-      "step": "subtasks",
+      "step": "spec",
       "question": "Should the CTA link to /contact or /demo?",
       "blocks_next_step": true
     }
@@ -166,8 +161,8 @@ Append one event per workflow result.
     "original": "redesign hero section",
     "story": "Feature: Hero section redesign\n\nAs a site visitor\nI want to see a clear headline, subcopy, and call-to-action on the home page\nSo that I understand the product and know what to do next\n\nScenario: Home page hero displays key content\n  Given I am viewing the home page\n  When the page loads above the fold\n  Then I see a prominent headline\n  And I see supporting subcopy beneath the headline\n  And I see a primary call-to-action button\n",
     "type": "feature",
-    "current_step": "subtasks",
-    "next_step": "execute",
+    "current_step": "review",
+    "next_step": "acceptance",
     "last_completed_step": "spec"
   },
   "git": {
@@ -181,7 +176,6 @@ Append one event per workflow result.
   "artifacts": {
     "context": "current-task/status.json",
     "spec": "current-task/specs/hero-section.json",
-    "subtasks": "current-task/subtasks/hero-section.md",
     "review": "current-task/reviews/hero-section.json",
     "review_validation": "current-task/review-validations/r1-validation.json",
     "sync": "current-task/syncs/hero-section.json",

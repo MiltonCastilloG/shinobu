@@ -69,7 +69,7 @@ Summarize: spec path, story path, scenario count (and ids), whether this was a f
 
 ## Safety rules
 
-- Never edit application code, specs, or subtasks
+- Never edit application code or specs
 - Never write except at the caller's story path
 - Never raise product-design `open_questions`
 - When the spec is incomplete, write nothing and report `spec_incomplete`

@@ -6,7 +6,7 @@ Path: `current-task/status.json` relative to task worktree root.
 
 **Write boundary:** only `current-task-update`. Readers use [status-read.md](status-read.md).
 
-Document bodies live as separate files; status holds **position**, document **pointers**, and **open_questions**. Operational steps (execute / review / sync / integrate / close) do not use handoff files or status blobs — `task.next_step` is enough.
+Document bodies live as separate files; status holds **position**, document **pointers**, and **open_questions**. Operational steps (review / sync / integrate / close) do not use handoff files or status blobs — `task.next_step` is enough.
 
 ## Top-level fields
 
@@ -38,7 +38,7 @@ Document bodies live as separate files; status holds **position**, document **po
 | `next_step` | Yes | Next step Shinobu should propose — **workflow source of truth** |
 | `side_effects` | No | Append-only log of jump runs |
 
-Step values: `start`, `spec`, `gherkin`, `subtasks`, `execute`, `review`, `fix`, `acceptance`, `sync`, `archive`, `integrate`, `close`, `done`.
+Step values: `start`, `spec`, `gherkin`, `review`, `acceptance`, `sync`, `archive`, `integrate`, `close`, `done`.
 
 Do **not** persist `completed_step` / `completed_steps` — consumers use `next_step`.
 
@@ -66,7 +66,6 @@ Worktree-relative pointers to **document** outputs only. Gates resolve `worktree
 |-------|----------|-------------|
 | `story` | No | `current-task/story.md` |
 | `spec` | No | Spec JSON path |
-| `subtasks` | No | Subtask markdown path |
 | `archive` | No | `docs/archive/<slug>/report.json` |
 
 No `sync` / `integrate` / `review_validation` / `review_input` pointers.
@@ -80,7 +79,7 @@ A sheep cannot reach a human, so this is also how it asks. One entry per questio
 ```json
 "open_questions": [
   {
-    "step": "subtasks",
+    "step": "spec",
     "question": "Where should the hero CTA link?",
     "options": ["/contact", "/demo"],
     "context": "The spec names a CTA but no destination; both routes exist."
@@ -90,13 +89,9 @@ A sheep cannot reach a human, so this is also how it asks. One entry per questio
 
 A plain string is accepted too, for questions that need no options.
 
-## Acceptance / fix / review outcomes
+## Acceptance / review outcomes
 
-Shinobu sets `next_step` from chat and the sheep summary (e.g. after review → `acceptance` or `execute`). No readiness file on disk.
-
-## Spec `open_questions` gate
-
-Subtasks gate may read `open_questions` from the spec file when present.
+Shinobu sets `next_step` from chat and the sheep summary (e.g. after review → `acceptance`, or `gherkin` / `spec` when changes are needed). No readiness file on disk.
 
 ## Example
 
@@ -110,7 +105,7 @@ Subtasks gate may read `open_questions` from the spec file when present.
     "original": "hero-section",
     "type": "feature",
     "current_step": "gherkin",
-    "next_step": "subtasks"
+    "next_step": "review"
   },
   "scope": {
     "worktree_path": "worktrees/castlemill-landing-hero-section"
