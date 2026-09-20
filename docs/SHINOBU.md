@@ -15,11 +15,11 @@ Saying **Shinobu** is the selector in the Shinobu repository. There is no `--pip
 | Shinobu owns after the fork | Inherited baseline (independent copy) |
 | --------------------------- | ----------------------------------- |
 | `workflow-runtime/agents/shinobu.md` | Leaf sheep: spec, Gherkin, review, sync, archive, integrate, fallback |
-| Shinobu routing and bootstrap | Leaf skills: `spec-maker`, `story-maker`, review and git skills |
+| Shinobu routing and bootstrap | Leaf skills: `spec-maker`, `scenario-maker`, review and git skills |
 | `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor` and their skills | Start/status/close sheep and scripts |
-| Shinobu installer text, workspace/config/version names | `status.json`, `story.md`, `specs/`, worktree/archive layout |
+| Shinobu installer text, workspace/config/version names | `status.json`, `scenarios.json`, `specs/`, worktree/archive layout |
 
-Repository identity is the namespace. Agents stay flat and retain ordinary names (`sheep-start`, `sheep-status`, `sheep-close`). Artifacts remain generic (`status.json`, `story.md`, `specs/`). Product prefixes used only to avoid same-repo collisions are cancelled.
+Repository identity is the namespace. Agents stay flat and retain ordinary names (`sheep-start`, `sheep-status`, `sheep-close`). Artifacts remain generic (`status.json`, `scenarios.json`, `specs/`). Product prefixes used only to avoid same-repo collisions are cancelled.
 
 A worktree belongs to whichever repository created it.
 
@@ -33,7 +33,7 @@ A worktree belongs to whichever repository created it.
 
 | Sheep | Input | Output |
 | ----- | ----- | ------ |
-| `sheep-red` | **One Gherkin scenario** (Shinobu packs it — id + body — the way it packs a spec path). Worktree as scope. | Step definitions + a run. Success: the test **fails right**. Anything else is an **error** (`open_questions`); the loop stops. |
+| `sheep-red` | **One Gherkin scenario** (Shinobu packs it — one object from `scenarios.json`: id, title, gherkin text — the way it packs a spec path). Worktree as scope. | Step definitions + a run. Success: the test **fails right**. Anything else is an **error** (`open_questions`); the loop stops. |
 | `sheep-green` | **The git diff only** (uncommitted tree after red). | Smallest change that makes the failing test pass. Does not edit the test. Does not touch the story checklist. |
 | `sheep-green-refactor` | **The post-loop git diff.** Runs **first**. | Revises implementation only: simplify, remove duplication, and improve implementation abstractions without changing behavior. Exact implementation-file scope is deliberately open until build time. |
 | `sheep-red-refactor` | **The git diff after `sheep-green-refactor`.** Runs **second**. | Revises tests only: simplify, remove duplication, and improve test abstractions without changing scenario meaning. Exact test-file scope is deliberately open until build time. |
@@ -44,12 +44,12 @@ Existing step-definition files are just code in the worktree. Red sees them the 
 
 | Sheep | Change |
 | ----- | ------ |
-| `sheep-review` | Final verification, and explicitly two jobs: (1) **regressions** — run the whole suite, not just this task's scenarios, and report anything that broke; (2) **scenario compliance** — every `- [x]` line in `story.md` is actually satisfied by the implementation. A refactor that quietly changed behaviour is the failure this step exists to catch. |
-| `sheep-gherkin` | Reads the **spec**. Writes Gherkin **as a checklist** (`- [ ]` per scenario), ordered by dependency. Split before ordering if a scenario cannot be summarized in two sentences, reads like a goal, or has **more than four `Then` clauses**. Amend appends a new `- [ ]`. **No product questions** — incomplete spec → Shinobu sends `sheep-spec` again. |
+| `sheep-review` | Final verification, and explicitly two jobs: (1) **regressions** — run the whole suite, not just this task's scenarios, and report anything that broke; (2) **scenario compliance** — every `done: true` scenario in `scenarios.json` is actually satisfied by the implementation. A refactor that quietly changed behaviour is the failure this step exists to catch. |
+| `sheep-scenarios` | Reads the **spec**. Writes `current-task/scenarios.json`: an **ordered array of scenarios**, each `{ id, title, gherkin, done: false }`, ordered by dependency. Split before ordering if a scenario cannot be summarized in two sentences, reads like a goal, or has **more than four `Then` clauses**. Amend appends a new object. **No product questions** — incomplete spec → Shinobu sends `sheep-spec` again. |
 
 ### Inherited leaf sheep
 
-`sheep-spec`, `sheep-gherkin`, `sheep-review`, `sheep-sync`, `sheep-archive`, `sheep-integrate`, `sheep-fallback`.
+`sheep-spec`, `sheep-scenarios`, `sheep-review`, `sheep-sync`, `sheep-archive`, `sheep-integrate`, `sheep-fallback`.
 
 `sheep-spec` is unchanged. It already accepts free text / `task.original`.
 
@@ -57,26 +57,28 @@ Existing step-definition files are just code in the worktree. Red sees them the 
 
 Start, status, and close retain the generic names `sheep-start`, `sheep-status`, and `sheep-close`. They are copied with the repository, then maintained independently. Shinobu rewrites product-facing routing/bootstrap/configuration and has no Nicki runtime dependency.
 
-### Not used by Shinobu
+### Removed at the fork
 
-`sheep-subtask`, `sheep-execute` — Nicki's tail. Remove them from the Shinobu fork when red/green replaces them.
+`sheep-subtask`, `sheep-execute`, `subtask-maker`, `execute-plan`, `validation` — Nicki's tail. Deleted in Stage 2 job S2; `current-task/subtasks/` is no longer scaffolded.
 
 ---
 
 ## Questions live on spec
 
-`sheep-spec` already stops on vague outcome, unclear scope, competing interpretations, and design forks (`spec-maker` Step 2). `sheep-gherkin` does not ask. The orchestrator does not interview at gherkin.
+`sheep-spec` already stops on vague outcome, unclear scope, competing interpretations, and design forks (`spec-maker` Step 2). `sheep-scenarios` does not ask. The orchestrator does not interview at the scenarios step.
 
 ---
 
-## Scenario checklist (the cursor)
+## Scenario list (the cursor)
 
-`sheep-gherkin` writes the Gherkin **as a checklist**, same idea as Nicki subtasks: one `- [ ]` per scenario, ordered by dependency. That file **is** the cursor. No extra field on status.
+`sheep-scenarios` writes `current-task/scenarios.json`: an ordered array of scenario objects, each with a stable `id`, a `title`, the `scenarios` text, and `done: false`. Array order is dependency order. That file **is** the cursor. No extra field on status.
 
-- The **loop** (Shinobu, programmatically — not a sheep) picks the first `- [ ]` and packs that scenario into red.
-- After green returns success, the **same loop** marks that line `- [x]`. Green never edits the story. Exact flip mechanism is for when the loop is built.
-- **Exit:** no `- [ ]` left → `sheep-green-refactor`, then `sheep-red-refactor`.
-- Amend appends a new `- [ ]`. The loop will pick it up; earlier `- [x]` stay done.
+JSON, not Markdown, because the loop is a script: "first scenario with `done: false`" is a one-line lookup, marking done is a boolean flip rather than a line edit, and red receives one object instead of a parsed Markdown block. The spec is already JSON; the story now matches it. Shinobu renders the scenarios in chat at the human gate, so the human never reads the JSON raw.
+
+- The **loop** (Shinobu, programmatically — not a sheep) picks the first `done: false` scenario and packs that object into red.
+- After green returns success, the **same loop** sets that scenario's `done` to `true`. Green never edits the story. Exact flip mechanism is for when the loop is built.
+- **Exit:** no `done: false` left → `sheep-green-refactor`, then `sheep-red-refactor`.
+- Amend appends a new object with `done: false`. The loop will pick it up; earlier `done: true` entries stay done and are never rewritten.
 - **Runs where:** a plain in-repo script invoked synchronously in the live session — not a background daemon, not a graph framework (e.g. LangGraph).
 
 `status.json` still holds `current_step` / `next_step` / artifact pointers / `open_questions`. It does not store which scenario is next — the story file does.
@@ -99,15 +101,15 @@ The two refactor sheep run **one after the other**: `sheep-green-refactor` on th
 
 1. `sheep-start`
 2. `sheep-spec` → `specs/`
-3. `sheep-gherkin` → `story.md` checklist
+3. `sheep-scenarios` → `scenarios.json` scenario list
 4. **Human gate** — approve the scenarios
 5. **Consent once**, then the loop until the checklist is clear:
-   1. `sheep-red` — packed first `- [ ]` scenario
+   1. `sheep-red` — packed first `done: false` scenario
    2. `sheep-green` — diff
-   3. loop marks that scenario `- [x]` (programmatic; not a sheep)
+   3. loop sets that scenario `done: true` (programmatic; not a sheep)
 6. `sheep-green-refactor` — post-loop diff; implementation domain only
 7. `sheep-red-refactor` — the diff after step 6; test domain only
-8. `sheep-review` — regressions (full suite) + every `- [x]` scenario actually satisfied
+8. `sheep-review` — regressions (full suite) + every `done: true` scenario actually satisfied
 9. **Human gate** — user sees the uncommitted changes, then git tail
 10. Git tail:
    1. `sheep-sync`
@@ -118,7 +120,7 @@ The two refactor sheep run **one after the other**: `sheep-green-refactor` on th
 
 Two consents only: before the first red, after review. Nothing in the loop or the refactor steps asks or commits.
 
-When something is wrong, jump to gherkin and **append** a new scenario. If the spec is wrong, jump to spec.
+When something is wrong, jump to `scenarios` and **append** a new scenario. If the spec is wrong, jump to spec.
 
 ---
 

@@ -20,25 +20,26 @@ Run Stage 1 and the neutral-runtime extract before the fork so both products inh
 | ----- | -------- |
 | Invocation | `nicki …` in the Nicki repo; `shinobu …` in the Shinobu repo. No `--pipeline`. |
 | Products | Independent repositories with shared Git history through the fork point. |
-| Artifacts | Keep generic `status.json`, `story.md`, `specs/`, `subtasks/`, and `global-status.json`; repository identity is the namespace. |
+| Artifacts | Keep generic `status.json`, `scenarios.json`, `specs/`, and `global-status.json`; repository identity is the namespace. `subtasks/` was removed with the Nicki tail (S2); `story.md` became `scenarios.json` (S2a). |
 | Agents | Flat agent folder. Keep generic sheep names in each repository; fork changes only the orchestrator selector from `nicki` to `shinobu`. |
 | Runtime | Extract `workflow-runtime/` before the fork. `.cursor/` and `.claude/` are host adapters. |
 | Spec | Unchanged. Already accepts free text / `task.original`. |
-| Spec first | **Nicki Stage 1**, also what Shinobu's head is. One `story-maker`. |
-| Gherkin | Spec → ordered Gherkin **checklist**. No product questions. |
+| Spec first | **Nicki Stage 1**, also what Shinobu's head is. One `scenario-maker`. |
+| Scenario naming | One word at every level: step `scenarios`, `sheep-scenarios`, skill `scenario-maker`, file `current-task/scenarios.json`, key `artifacts.scenarios`. Gherkin is the *format* the file holds, not a name for the step or the artifact. |
+| Gherkin | Spec → `scenarios.json`: an **ordered array** of scenario objects `{ id, title, gherkin, done }`. No product questions. |
 | Split | More than four **`Then`** clauses, or two-sentence / goal-shaped. |
 | Consent | Once before first red; once after review. Red / green and the two final refactors run uninterrupted — no clock. |
 | Red | Input = **one Gherkin scenario** packed by Shinobu. Success = fails right. Else error / hold. |
 | Green | Input = **git diff only**. Does not edit the test or the story. |
 | Final refactors | **Serial, in this order:** `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Sequential so neither can mask the other's regression, and tests are tidied last against settled implementation. Each owns a file domain; exact scope is open until build time. |
-| Amend | Append as a **new** `- [ ]`. Final refactors or the human catch duplication. |
-| Cursor | The story checklist. The **loop** packs the first `- [ ]` into red; after green succeeds, the **same loop** marks `- [x]` programmatically. Not green. Exact flip is for loop-build time. Exit: none left. |
+| Amend | Append as a **new** scenario object with `done: false`. Final refactors or the human catch duplication. |
+| Cursor | `scenarios.json`. The **loop** packs the first `done: false` scenario into red; after green succeeds, the **same loop** sets `done: true` programmatically. Not green. Exact flip is for loop-build time. Exit: none left. JSON so the loop script reads and flips without parsing Markdown. |
 | Loop implementation | Plain in-repo script, invoked synchronously in the live session — not a background daemon, not a graph framework. |
 | Step definitions | Code in the worktree. Red finds them like execute finds source. No extra pointer. |
 | Test runner | `black-sheep-testing-scaffold` in Stage 3. Until then, projects that already have a runner. |
 | Black sheep membership | Audit output. Not named in advance. |
 | Loop | red → green per unchecked scenario, then `sheep-green-refactor` → `sheep-red-refactor`, then review. |
-| Review | Final verification, explicitly two jobs: full-suite **regression** check, and **scenario compliance** — every `- [x]` in `story.md` actually satisfied. |
+| Review | Final verification, explicitly two jobs: full-suite **regression** check, and **scenario compliance** — every `done: true` scenario in `scenarios.json` actually satisfied. |
 | Git tail | Inherited at fork, then independently maintained. |
 | Lifecycle sheep | `sheep-start`, `sheep-status`, `sheep-close` are inherited unchanged, then independently maintained. Do not parameterize across repositories. |
 | Ownership audit | Stage 1 removes same-repo namespacing work and records the fork boundary. Live map: [`OWNERSHIP.md`](OWNERSHIP.md). |
@@ -93,8 +94,8 @@ Done this pass: `docs/NICKI.md`, `WORKFLOW-DIAGRAMS.md`, `status-read.md` / `sta
 
 ### Then: build Shinobu
 
-- `workflow-runtime/agents/shinobu.md` — own pipeline. Shell: Shinobu bootstrap only. Loop packs first `- [ ]` into red; after green succeeds, loop marks `- [x]` (programmatic, not a sheep). Then `sheep-green-refactor`, then `sheep-red-refactor`. Two gates. Jump to Gherkin to append; jump to spec if the spec is wrong.
-- Shinobu routing: `start → spec → gherkin → red → …` loop-back while the story has `- [ ]`.
+- `workflow-runtime/agents/shinobu.md` — own pipeline. Shell: Shinobu bootstrap only. Loop packs the first `done: false` scenario from `scenarios.json` into red; after green succeeds, loop sets `done: true` (programmatic, not a sheep). Then `sheep-green-refactor`, then `sheep-red-refactor`. Two gates. Jump to `scenarios` to append; jump to spec if the spec is wrong.
+- Shinobu routing: `start → spec → scenarios → red → …` loop-back while `scenarios.json` has a `done: false` scenario.
 - Bootstrap reads only the Shinobu repository's routing and `status.json`.
 - Lifecycle remains `sheep-start`, `sheep-status`, `sheep-close`.
 - Parent rule: `shinobu …` → fresh `shinobu` Task.
@@ -107,7 +108,7 @@ Done this pass: `docs/NICKI.md`, `WORKFLOW-DIAGRAMS.md`, `status-read.md` / `sta
 - **One-shot job:** red and green each run **this scenario’s test once**, then return. `task: false`.
 - Four skills + four sheep: `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor`. Green does not edit the test or the story. Checklist flips belong to the loop.
 - The two refactors are two ordinary sequential steps, each followed by its own `sheep-status`. No fork-and-join in routing, no aggregate status write.
-- Review performs authoritative final verification: it runs the **whole** suite looking for regressions the refactors introduced, and checks every `- [x]` scenario against the implementation.
+- Review performs authoritative final verification: it runs the **whole** suite looking for regressions the refactors introduced, and checks every `done: true` scenario against the implementation.
 
 Dogfood on a project that already has a runner.
 

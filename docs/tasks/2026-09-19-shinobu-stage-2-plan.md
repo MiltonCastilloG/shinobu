@@ -20,7 +20,8 @@ Restated so a worker prompt can cite them, not to reopen them.
 | No sharing | No shared runtime package, no Nicki↔Shinobu sync, no `--pipeline` flag. |
 | Loop | Plain in-repo script, invoked synchronously in the live session. Not a daemon, not a graph framework. The loop marks `- [x]`; green never does. |
 | Consent | Exactly two: before the first red, after review. |
-| Red | Input is one packed Gherkin scenario. Success = fails right. Anything else → `open_questions`, loop holds. |
+| Story artifact | `current-task/scenarios.json`: ordered array of `{ id, title, gherkin, done }`. The loop reads the first `done: false`, flips `done` after green. Replaces the `- [ ]` Markdown checklist (owner's call, S2a). |
+| Red | Input is one packed scenario object from `scenarios.json` (id, title, gherkin). Success = fails right. Anything else → `open_questions`, loop holds. |
 | Green | Input is the git diff only. Never edits the test or the story. |
 | The four new sheep | `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor`. |
 | Refactors are **serial** | `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Each is an ordinary step with its own `sheep-status`. No fork-and-join anywhere. **Exact file scope stays OPEN until those sheep are built (S3b), not decided here.** |
@@ -35,6 +36,8 @@ Restated so a worker prompt can cite them, not to reopen them.
 S1  identity rename
  │
 S2  remove the Nicki tail
+ │
+S2a scenarios.json — gherkin writes an ordered scenario array
  │
  ├──────────┬──────────┐
 S3a red     S3b        S3c review              ← parallel, disjoint write domains
@@ -53,7 +56,7 @@ S6  dogfood (human-run checklist)
 | Group | Jobs | Run |
 | ----- | ---- | --- |
 | A | S1 | one worker |
-| B | S2 | one worker |
+| B | S2, then S2a | one worker each, serial |
 | C | S3a, S3b, S3c | **three workers in parallel** |
 | D | S4 | one worker |
 | E | S5, S7 | **two workers in parallel** |
@@ -74,25 +77,29 @@ The authority for "can these two run at once". A worker may create/modify/delete
 | `workflow-runtime/agents/shinobu.md` | ✎ | ✎ | — | — | — | ✎ | — | — |
 | `workflow-runtime/agents/sheep-red.md`, `sheep-green.md` | — | — | **✎** | — | — | — | — | — |
 | `workflow-runtime/agents/sheep-green-refactor.md`, `sheep-red-refactor.md` | — | — | — | **✎** | — | — | — | — |
-| `workflow-runtime/agents/sheep-review.md` | ✎ | — | — | — | **✎** | — | — | — |
 | `workflow-runtime/agents/sheep-subtask.md`, `sheep-execute.md` | — | ✗ | — | — | — | — | — | — |
 | other `workflow-runtime/agents/sheep-*.md` | ✎ | — | — | — | — | — | — | — |
-| `workflow-runtime/skills/red-test/**`, `green-implementation/**` | — | — | **✎** | — | — | — | — | — |
+| `workflow-runtime/skills/red-implementation/**`, `green-implementation/**` | — | — | **✎** | — | — | — | — | — |
 | `workflow-runtime/skills/green-refactor/**`, `red-refactor/**` | — | — | — | **✎** | — | — | — | — |
-| `workflow-runtime/skills/review-execution/**` | ✎ | — | — | — | **✎** | — | — | — |
+| `workflow-runtime/skills/review-execution/**`, `agents/sheep-review.md` | ✎ | **✎** | — | — | **✎** | — | — | — |
 | `workflow-runtime/skills/subtask-maker/**`, `execute-plan/**`, `validation/**` | — | ✗ | — | — | — | — | — | — |
 | `workflow-runtime/skills/shinobu/routing.json` | ✎ | ✎ | — | — | — | ✎ | — | — |
 | `workflow-runtime/skills/shinobu/scripts/**` | ✎ | — | — | — | — | ✎ | — | — |
 | other `workflow-runtime/skills/**` | ✎ | ✎ | — | — | — | — | — | — |
 | `.cursor/hooks/agent-permissions.json`, `.cursor/permissions.json` | ✎ | ✎ | — | — | — | ✎ | — | — |
+| `workflow-runtime/rules/shinobu-default.md` (+ regenerated `.mdc`, `CLAUDE.md`) | ✎ | ✎ | — | — | — | ✎ | — | — |
 | `install*.py`, `.gitignore`, root config files | ✎ | — | — | — | — | — | — | — |
 | `tests/smoke/**`, `test.py` | ✎ | ✎ | — | — | — | — | ✎ | — |
-| `README.md`, `docs/**` (except `tasks.md`) | ✎ (README only) | — | — | — | — | — | — | ✎ |
+| `README.md`, `docs/**` (except `tasks.md`) | ✎ (README only) | ✎ (README pipeline line only) | — | — | — | — | — | ✎ |
 | `docs/tasks/tasks.md` | row flip only | row flip only | row flip only | row flip only | row flip only | row flip only | row flip only | row flip only |
 
 ✎ = may edit · ✗ = deletes · — = must not touch.
 
-**Group C disjointness proof.** S3a's domain is four paths: `agents/sheep-red.md`, `agents/sheep-green.md`, `skills/red-test/`, `skills/green-implementation/`. S3b's is four: `agents/sheep-green-refactor.md`, `agents/sheep-red-refactor.md`, `skills/green-refactor/`, `skills/red-refactor/`. S3c's is two: `agents/sheep-review.md`, `skills/review-execution/`. Pairwise intersection is empty. Every file more than one of them would otherwise want — `routing.json`, `shinobu.md`, `agent-permissions.json`, `permissions.json`, the smokes — is deferred to S4, which is serial. S3a and S3b create files only; S3c is the only one of the three that modifies an existing file, and no other job in the group reads it.
+**S2a is serial and has no column.** It touches `skills/scenario-maker/**`, `agents/sheep-scenarios.md`, the `scenarios` entry in `routing.json`, the story path in `shinobu.md`, `task-archive/**`, the current-task-update docs, `start-task` / `close-*` SKILL prose, fixtures, the smokes that name `story.md`, and README's two story lines. It runs alone between S2 and Group C, so nothing it touches is contested.
+
+**S2 and S3c share `review-execution/` and `sheep-review.md`, and that is safe** because they are sequential, not parallel: S2 finishes before Group C starts. S2 removes the dead subtask/execute references (they are part of the tail it exists to remove); S3c then adds the regression and scenario-compliance duties. Leaving dangling references for a job two steps away would be worse than sharing a file across two serial jobs.
+
+**Group C disjointness proof.** S3a's domain is four paths: `agents/sheep-red.md`, `agents/sheep-green.md`, `skills/red-implementation/`, `skills/green-implementation/`. S3b's is four: `agents/sheep-green-refactor.md`, `agents/sheep-red-refactor.md`, `skills/green-refactor/`, `skills/red-refactor/`. S3c's is two: `agents/sheep-review.md`, `skills/review-execution/`. Pairwise intersection is empty. Every file more than one of them would otherwise want — `routing.json`, `shinobu.md`, `agent-permissions.json`, `permissions.json`, the smokes — is deferred to S4, which is serial. S3a and S3b create files only; S3c is the only one of the three that modifies an existing file, and no other job in the group reads it.
 
 **Group E disjointness proof.** S5's domain is `tests/smoke/**` + `test.py`. S7's is `README.md` + `docs/**` minus `tasks.md`. Disjoint, and no smoke module reads `README.md` or `docs/` (`path_resolution.py` scans `workflow-runtime/` markdown, `routing.json`, `.cursor/permissions.json`, `.cursor/hooks.json` — nothing under `docs/`).
 
@@ -118,7 +125,7 @@ Machine-read strings that must flip in the same commit: `routing.json` `harness_
 
 ### S2 — Remove the Nicki tail
 
-Delete `sheep-subtask.md`, `sheep-execute.md`, `skills/subtask-maker/`, `skills/execute-plan/`, `skills/validation/` (already retired per `OWNERSHIP.md`). Remove the `subtasks`, `execute`, and `fix` steps from `routing.json` and leave `gherkin → review` so the graph terminates — **not** `red`, which does not exist yet. Strip `current-task/subtasks/` scaffolding from `create-worktree.py`, subtask/execute language from `shinobu.md` and the current-task-update docs, and the matching keys from `agent-permissions.json`.
+Delete `sheep-subtask.md`, `sheep-execute.md`, `skills/subtask-maker/`, `skills/execute-plan/`, `skills/validation/` (already retired per `OWNERSHIP.md`). Remove the `subtasks`, `execute`, and `fix` steps from `routing.json` and leave `scenarios → review` so the graph terminates — **not** `red`, which does not exist yet. Strip `current-task/subtasks/` scaffolding from `create-worktree.py`, subtask/execute language from `shinobu.md` and the current-task-update docs, and the matching keys from `agent-permissions.json`.
 
 Expect to rewrite, not merely edit: `routing_next_step.py`, `routing_write.py` (its `artifact_key` set assertion names `subtasks`), `jump_mode.py`, `readiness_mapping.py`, `status_vocabulary.py`.
 
@@ -126,9 +133,47 @@ Expect to rewrite, not merely edit: `routing_next_step.py`, `routing_write.py` (
 
 **Model:** Opus 5 — the routing/smoke rewrite is judgement, not substitution.
 
+### S2a — `scenarios.json`, and one name at every level
+
+Two changes in one job, because they touch the same files and the second is what makes the first coherent:
+
+**1. Format.** `sheep-gherkin` stops writing a Markdown checklist and writes a JSON scenario array:
+
+```json
+{
+  "meta": { "schema": "scenarios.v1" },
+  "feature": { "title": "…", "as_a": "…", "i_want": "…", "so_that": "…" },
+  "scenarios": [
+    { "id": "hero-headline", "title": "Headline is visible above the fold",
+      "gherkin": "Scenario: Headline is visible above the fold\n  Given …\n  When …\n  Then …",
+      "done": false }
+  ]
+}
+```
+
+Array order is dependency order. `id` is stable kebab-case, unique, never reused, never changed once `done: true`. `gherkin` is one string — the full `Scenario:` block — so red can drop it into a feature file unchanged. Every rule in today's `story-format.md` survives the format change: split on two sentences / goal-shaped / more than four `Then`s, order after splitting, no product questions, amend appends and never rewrites a done entry.
+
+**2. Name.** The artifact is a list of scenarios; Gherkin is the syntax it holds. So one word at every level, owner's call:
+
+| Level | Was | Becomes |
+| ----- | --- | ------- |
+| routing step | `gherkin` | `scenarios` |
+| sheep | `sheep-gherkin` | `sheep-scenarios` |
+| skill | `story-maker/` (`story-format.md`) | `scenario-maker/` (`scenario-format.md`) |
+| file | `current-task/story.md` | `current-task/scenarios.json` |
+| status key | `artifacts.story` | `artifacts.scenarios` |
+
+Why now, and why its own job: S3a's red packs one object from this file and S4's loop reads and flips it. Settling the schema *and* the names in real files before building two consumers beats defining them twice in prompts. Serial, alone, before Group C.
+
+**Files:** the skill folder (`git mv`), the sheep file (`git mv` + frontmatter `name:`), `routing.json` (`spec.default_next_step`, the step key, its `sheep` and `artifact_key`, its prompt), `shinobu.md`, `rules/shinobu-default.md` (+ regenerated `.mdc` and `CLAUDE.md`), `.cursor/hooks/agent-permissions.json` key, `task-archive/**`, `current-task-update/*.md`, `start-task` / `close-*` / `spec-maker` SKILL prose, the bootstrap fixture `status.json`, every smoke naming `gherkin` / `story`, README.
+
+**Done when:** `python3 test.py` green · `git grep -nE "story\.md|story-maker|sheep-gherkin|artifacts\.story"` and a routing-step grep for `"gherkin"` return nothing outside `docs/archive/**`, `docs/tasks/**`, and the banner-ed baseline docs · agent files ↔ permission keys a bijection · routing chain is `start → spec → scenarios → review → …` · the example in `scenario-format.md` parses as JSON · every carried-over rule is findable by name · `task-archive` names `scenarios.json`.
+
+**Model:** Opus 5 — the rename is mechanical; keeping the split / order / amend rules exactly as strong through the rewrite is judgement.
+
 ### S3a — `sheep-red` + `sheep-green`
 
-Two agent files and two skills: `skills/red-test/SKILL.md`, `skills/green-implementation/SKILL.md`. Red takes one packed scenario (id + body) and the worktree, writes/extends step definitions, runs that scenario's test **once**, returns `task: false`; success is exactly "fails right", everything else is `open_questions`. Green takes the git diff only, makes the smallest change that passes, never touches the test or `story.md`. Both follow the existing sheep return contract in `routing.json`.
+Two agent files and two skills: `skills/red-implementation/SKILL.md`, `skills/green-implementation/SKILL.md`. Red takes one packed scenario (id + body) and the worktree, writes/extends step definitions, runs that scenario's test **once**, returns `task: false`; success is exactly "fails right", everything else is `open_questions`. Green takes the git diff only, makes the smallest change that passes, never touches the test or `story.md`. Both follow the existing sheep return contract in `routing.json`.
 
 **Files:** the four listed above. Nothing else — no routing, no `shinobu.md`, no permissions, no tests.
 
@@ -159,6 +204,8 @@ Two agent files and two skills: `skills/green-refactor/`, `skills/red-refactor/`
 
 Keep everything review already does. Review still writes nothing but its return, and still routes its verdict through `summary`.
 
+Also drop `review-execution/review-guidance-format.md`'s hardcoded `current-task/review-inputs/rN-review.json` default. Its writer was the retired `validation/` skill (deleted in S2); nothing produces it, routing packs no path for it, and `status-format.md` forbids a pointer to it. Found by the S2 worker, correctly left for this job.
+
 **Files:** `workflow-runtime/agents/sheep-review.md`, `workflow-runtime/skills/review-execution/**`. Nothing else.
 
 **Done when:** both duties are stated in the skill and reflected in the agent's disk-inputs and return shape · `python3 test.py` green · the return shape still matches what `update-status.py` expects from a review step (`summary.next_step` override still works).
@@ -170,9 +217,10 @@ Keep everything review already does. Review still writes nothing but its return,
 Serial, and the only job that touches shared files.
 
 - `shinobu.md`: the loop as a plain in-repo script invoked synchronously — pick the first `- [ ]` in `story.md`, pack it into red, run green on the diff, mark `- [x]`, repeat. Exit when none remain. Two consents, no clock, no polling between red and green.
-- `routing.json`: `start → spec → gherkin → red → green → …` with loop-back while the story has `- [ ]`, then `green-refactor → red-refactor → review → git tail`. Four ordinary steps; no fork-and-join, no aggregate status write.
+- `routing.json`: `start → spec → scenarios → red → green → …` with loop-back while the story has `- [ ]`, then `green-refactor → red-refactor → review → git tail`. Four ordinary steps; no fork-and-join, no aggregate status write.
 - `.cursor/hooks/agent-permissions.json`: the four new agent keys. `.cursor/permissions.json`: any new allowlist prefix the loop script needs.
 - Red returning `open_questions` holds the loop and holds `next_step`.
+- The human gate after gherkin: Shinobu renders `scenarios.json`'s scenarios in chat (id, title, gherkin) for approval. The human never reads the JSON raw.
 
 **Done when:** `python3 test.py` green · routing graph terminates at `done` · a hand-run of the loop script against a fixture `story.md` with two unchecked scenarios flips exactly one box per successful green and stops when the file is clear · `green-refactor` precedes `red-refactor` in routing and each has its own status step · every new path string resolves.
 
@@ -180,7 +228,7 @@ Serial, and the only job that touches shared files.
 
 ### S5 — Shinobu smokes
 
-New modules registered in `test.py`: loop cursor behaviour while scenarios remain and on exit, red-failure `open_questions` hold, refactor step order (`green-refactor` → `red-refactor`, each followed by status), and the routing assertions S2 deferred. Prefer reading `story.md` directly over asserting on prose.
+New modules registered in `test.py`: loop cursor behaviour while scenarios remain and on exit, red-failure `open_questions` hold, refactor step order (`green-refactor` → `red-refactor`, each followed by status), and the routing assertions S2 deferred. Prefer reading `scenarios.json` directly over asserting on prose.
 
 **Done when:** `python3 test.py` green with the new modules listed · each new module fails when its behaviour is reverted (prove it once, by hand).
 
@@ -218,9 +266,9 @@ Human-gated. Run Shinobu on a managed clone that already has a test runner — `
 
 | Decision | Default taken | Reverse cost |
 | -------- | ------------- | ------------ |
-| Skill folder names behind the four sheep | `red-test`, `green-implementation`, `green-refactor`, `red-refactor` — the refactor two mirror their sheep; the first two stay descriptive because a flat folder called `red/` next to `spec-maker/` reads as nothing | S3 only; rename a folder |
+| Skill folder names behind the four sheep | `red-implementation`, `green-implementation`, `red-refactor`, `green-refactor` — owner's call. Red *adds code* (step definitions plus a failing test); a name with "test" in it reads as if the skill runs tests, so both loop skills say `implementation` and the colour carries the meaning. | S3 only; rename a folder |
 | `shinobu_version.yaml` starts at | `0.1.0` — new product, its own numbering, rather than inheriting Nicki's `0.3.0` | one line |
-| S2 points `gherkin` at `review` | keeps the graph terminating between S2 and S4 instead of naming a step that does not exist | one line in S4 |
+| S2 points `scenarios` at `review` | keeps the graph terminating between S2 and S4 instead of naming a step that does not exist | one line in S4 |
 | S1 leaves the doc set to S7, with a banner | avoids rewriting docs twice, and the banner keeps the staleness visible | — |
 | `create-worktree.py` fallback warning | in S1's scope although it is not a rename | three lines |
 | Review hardening is its own job (S3c), in Group C | its files are disjoint from S3a and S3b, and it does not depend on S4's routing — so it costs no serial time | fold into S4 |

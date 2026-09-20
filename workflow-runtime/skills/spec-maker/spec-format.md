@@ -2,7 +2,7 @@
 
 **JSON only** — spec-maker writes this schema.
 
-Default path: `current-task/specs/<slug>.json` under the worktree scope root.
+The caller packs the output path (usually `current-task/specs/<slug>.json` under the worktree).
 
 Specs define **what** to build (requirements, scope, acceptance). They do **not** name implementation steps or file paths.
 

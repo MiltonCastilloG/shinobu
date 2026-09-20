@@ -15,10 +15,10 @@ Spec schema: [spec-format.md](spec-format.md) (single source of truth).
 |-------|----------|-------|
 | Worktree path | Yes | Absolute or repo-relative (e.g. `worktrees/hero-section`) |
 | Task description | Yes* | Whatever the prompt supplies — Gherkin, free text, or `task.original` |
-| Output path | No | Default `current-task/specs/<slug>.json` under scope root; agent may override |
+| Output path | Yes | Spec file path the caller packed — never invent it |
 | `meta.context` | No | Optional traceability path; set only when the agent passes one |
 
-\*When the description is missing or too vague to list testable requirements, return the question in `open_questions` and stop.
+\*When the description is missing or too vague to list testable requirements, return the question in `open_questions` and stop. Likewise when the prompt gave no output path.
 
 ## Procedure
 
@@ -37,8 +37,7 @@ Task Progress:
 1. Resolve the worktree path to an **absolute** path.
 2. Confirm the directory exists.
 3. Set the **scope root** to that absolute path. Derive `<slug>` from the final folder name (e.g. `worktrees/hero-section` → slug `hero-section`).
-4. Default output: `current-task/specs/<slug>.json` relative to the scope root.
-5. Infer `branch` from git when possible (e.g. `feature/hero-section`); omit if unknown.
+4. Infer `branch` from git when possible (e.g. `feature/hero-section`); omit if unknown.
 
 **Scope rules (non-negotiable):**
 
@@ -95,8 +94,8 @@ Include:
 
 Written file **must** include `open_questions: []` (Step 2 gate).
 
-1. Create the output directory under the scope root if it does not exist.
-2. Write the complete JSON to the output path.
+1. Create the parent directory of the caller's output path if it does not exist.
+2. Write the complete JSON to that path.
 3. Do not write any other files.
 
 ### Step 6: Report

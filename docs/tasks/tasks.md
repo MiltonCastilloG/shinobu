@@ -28,11 +28,12 @@ One worker session per job. The architect session owns this file; a worker flips
 |---|-----|-----------|-----------|--------|
 | **S1** | Identity rename — `nicki` → `shinobu` for the orchestrator, rule, routing/bootstrap folder, config/workspace/version filenames, installers, permissions keys, smokes, README | — | alone | done |
 | **S2** | Remove the Nicki tail — `sheep-subtask`, `sheep-execute`, `subtask-maker`, `execute-plan`, `validation`; routing steps `subtasks`/`execute`/`fix`; `current-task/subtasks/`; the smokes that assert them | S1 | alone | done |
-| **S3a** | `sheep-red` + `sheep-green` and their skills (`red-test`, `green-implementation`) | S2 | **∥ S3b, S3c** | **next** |
-| **S3b** | `sheep-green-refactor` + `sheep-red-refactor` and their skills. Serial at runtime — green-refactor on the post-loop diff, then red-refactor on what it leaves. **Settles the open refactor-scope question** — each SKILL.md states its own write domain | S2 | **∥ S3a, S3c** | **next** |
-| **S3c** | Review hardening — `sheep-review` + `review-execution` gain two named duties: full-suite **regression** check, and **scenario compliance** against every `- [x]` in `story.md` | S2 | **∥ S3a, S3b** | **next** |
+| **S2a** | `scenarios.json` — the gherkin sheep writes an ordered scenario array `{ id, title, gherkin, done }` instead of a Markdown checklist, so the loop reads and flips without parsing prose; and one name at every level: step `scenarios`, `sheep-scenarios`, `scenario-maker`, `artifacts.scenarios` | S2 | alone | **next** |
+| **S3a** | `sheep-red` + `sheep-green` and their skills (`red-implementation`, `green-implementation`) | S2a | **∥ S3b, S3c** | todo |
+| **S3b** | `sheep-green-refactor` + `sheep-red-refactor` and their skills. Serial at runtime — green-refactor on the post-loop diff, then red-refactor on what it leaves. **Settles the open refactor-scope question** — each SKILL.md states its own write domain | S2a | **∥ S3a, S3c** | todo |
+| **S3c** | Review hardening — `sheep-review` + `review-execution` gain two named duties: full-suite **regression** check, and **scenario compliance** against every `- [x]` in `story.md` | S2a | **∥ S3a, S3b** | todo |
 | **S4** | Loop + routing + status — `shinobu.md` orchestration, loop-back while `story.md` has `- [ ]`, then `green-refactor` → `red-refactor` → `review` as four ordinary steps, the four new permission keys | S3a, S3b, S3c | alone | todo |
-| **S5** | Shinobu smokes — loop cursor while scenarios remain, loop exit, red-failure `open_questions` hold, refactor step order | S4 | **∥ S7** | todo |
+| **S5** | Shinobu smokes — loop cursor while `scenarios.json` has `done: false`, loop exit, red-failure `open_questions` hold, refactor step order | S4 | **∥ S7** | todo |
 | **S7** | Docs — README pipeline + layout, `NICKI.md` → Shinobu semantics, `WORKFLOW-DIAGRAMS.md`, `OWNERSHIP.md` fork-action column | S4 | **∥ S5** | todo |
 | **S6** | Dogfood on a managed clone that already has a runner. **Human-gated** — architect writes the checklist, human runs it | S5 | — | todo |
 
@@ -68,7 +69,7 @@ Nothing below blocks Stage 2. **22–25 are mutually independent — any or all 
 | | PLAN CLI + multi-project dogfood | [`PLAN.md`](../PLAN.md) — schema, `workspace init` / clone / install / doctor |
 | | Caller-owned output shape | [`caller-owned-output-shape.md`](caller-owned-output-shape.md) — revisit once the Stage 2 sheep exist; archive-only bugs if they bite |
 | | Stage 3 — black sheep | Audit which sheep are ad-hoc-only, then `black-sheep-testing-scaffold` (runner + step-definition layout). [`SHINOBU_NEXT_STEPS.md`](../SHINOBU_NEXT_STEPS.md) |
-| | Quoting polish | Optional only — [`story-format.md`](../../workflow-runtime/skills/story-maker/story-format.md). Not a rewrite. |
+| | Quoting polish | Optional only — [`story-format.md`](../../workflow-runtime/skills/scenario-maker/story-format.md). Not a rewrite. |
 
 **Not doing:** shared runtime package, submodule, or subtree · any Nicki↔Shinobu sync or cherry-pick automation · product-suffixed sheep or artifact names · a `--pipeline` flag · Claude hook parity or a generated Claude permissions adapter · branch protection on `main` · `doctor` / version pin · evaluation harness or repository.
 
