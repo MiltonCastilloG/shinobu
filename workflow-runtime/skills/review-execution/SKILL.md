@@ -12,7 +12,7 @@ Review implementation in a worktree against the git diff and whatever exists und
 | Input | Required | Notes |
 |-------|----------|-------|
 | Worktree path | Yes | Absolute or repo-relative |
-| Review material | Yes* | Diff + optional story/spec from prompt / disk |
+| Review material | Yes* | Diff + optional scenarios/spec from prompt / disk |
 
 \*When the worktree is missing, or the diff alone is unclear with no planning files, return the question in `open_questions` and stop.
 

@@ -19,7 +19,7 @@ Specs define **what** to build (requirements, scope, acceptance). They do **not*
 | `constraints` | No | Rules for downstream work (e.g. `no-commit`, `no-new-deps`) |
 | `acceptance` | Yes | Testable criteria for done |
 | `assumptions` | No | Defaults applied when the task was silent |
-| `open_questions` | No | Unresolved decisions — must be empty before the story is written |
+| `open_questions` | No | Unresolved decisions — must be empty before scenarios are written |
 
 ## `meta` block
 

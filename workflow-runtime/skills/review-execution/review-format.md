@@ -82,7 +82,7 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 
 You cannot reach a human. Return the question in `open_questions` and stop — no verdict — when:
 
-- Spec or story is missing and partial review is insufficient
+- Spec or scenarios is missing and partial review is insufficient
 - A requirement is subjective and pass/fail is unclear
 - Verify commands cannot run (missing deps, wrong branch base)
 - Git history makes change discovery unreliable

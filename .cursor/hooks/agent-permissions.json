@@ -67,7 +67,7 @@
     "generate_image": false,
     "switch_mode": false
   },
-  "sheep-gherkin": {
+  "sheep-scenarios": {
     "read": true,
     "write": true,
     "delete": false,

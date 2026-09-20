@@ -31,8 +31,8 @@ def run(root: Path) -> None:
     archived = {"artifacts": {"archive": f"docs/archive/{SLUG}/report.json"}}
 
     _check(resolve, "start", {}, "spec", "start → spec")
-    _check(resolve, "spec", empty, "gherkin", "spec → gherkin")
-    _check(resolve, "gherkin", empty, "review", "gherkin → review")
+    _check(resolve, "spec", empty, "scenarios", "spec → scenarios")
+    _check(resolve, "scenarios", empty, "review", "scenarios → review")
     _check(resolve, "review", empty, "acceptance", "review → acceptance")
     _check(resolve, "acceptance", empty, "sync", "acceptance → sync")
     _check(resolve, "archive", empty, "sync", "archive → sync (second pass)")

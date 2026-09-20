@@ -8,7 +8,7 @@ Skills are **pure functionality** — portable operation manuals with no knowled
 | **Sheep** (`workflow-runtime/agents/sheep-*.md`) | Workflow binding: run one skill in isolated context, return JSON | Shinobu on the pipeline; direct Task spawn for ad-hoc |
 | **Shinobu** (`workflow-runtime/agents/shinobu.md`) | Full pipeline, transitions, user confirmations | User says `shinobu …` |
 
-Pipeline leaf skills: `story-maker`, `spec-maker`, `review-execution`, …
+Pipeline leaf skills: `scenario-maker`, `spec-maker`, `review-execution`, …
 
 ## Invocation policy
 
@@ -20,7 +20,7 @@ Pipeline leaf skills: `story-maker`, `spec-maker`, `review-execution`, …
 ## Rules
 
 1. Leaf skills do **not** reference `status.json`, `global-status.json`, pipeline step names, or “send sheep next”.
-2. Leaf skills accept **inputs from the sheep prompt** (paths, inline JSON, story text) — no implicit disk discovery.
+2. Leaf skills accept **inputs from the sheep prompt** (paths, inline JSON, scenario text) — no implicit disk discovery.
 3. Format files document **one artifact type** each — no multi-agent directory maps.
 4. Sheep load skills and pass concrete inputs; sheep own auto-load paths and caller summary expectations.
 
