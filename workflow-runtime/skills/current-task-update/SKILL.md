@@ -18,7 +18,7 @@ Schemas:
 
 ## When to use
 
-- Shinobu completed `start`, `spec`, `gherkin`, `review`, `acceptance`, `sync`, or `integrate`.
+- Shinobu completed `start`, `spec`, `scenarios`, `review`, `acceptance`, `sync`, or `integrate`.
 - Shinobu needs next step, artifact pointers, or open questions persisted.
 - Worktree exists; need init missing `current-task/status.json`.
 
@@ -66,7 +66,7 @@ Full write (when a step completed):
   "worktree": "projects/foo/worktrees/hero-section",
   "completed_step": "spec",
   "artifact": "current-task/specs/hero-section.json",
-  "next_step": "gherkin",
+  "next_step": "scenarios",
   "open_questions": [],
   "summary": "Spec captured requirements and acceptance."
 }
@@ -79,7 +79,7 @@ when absent, only advances `next_step` but **always writes `task.current_step`**
 
 Also optional: `task` (slug, title, original, type), `git`, `artifacts`.
 
-For gherkin: set `artifacts.story` from the summary `artifact` (usually `current-task/story.md`).
+For scenarios: set `artifacts.scenarios` from the summary `artifact` (usually `current-task/scenarios.json`).
 
 ## Workflow
 
@@ -120,7 +120,7 @@ Emit simplified shape on every write. **Legacy migration:** when loading v1 stat
 - `meta.schema: task-status.v2` only — do not write `meta.updated_by` or other ceremony fields
 - `task.current_step`, `task.next_step` — drop legacy `task.completed_steps` if present
 - Merge `artifacts`; review writes no file and sets no pointer
-- **Describe:** replace `task.original` with slug or one-line title; set `artifacts.story`
+- **Describe:** replace `task.original` with slug or one-line title; set `artifacts.scenarios`
 - Acceptance: when `--step acceptance`, set `current_step` and derive `next_step` to `sync`; reject may populate `open_questions`
 - **Jump (`--mode jump`):** set `next_step` to the target, leave `current_step` untouched, append one `task.side_effects` entry. Needs an existing `status.json` — jump never initialises a task.
 - `open_questions` from summary; blocked when non-empty

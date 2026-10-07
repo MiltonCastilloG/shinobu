@@ -49,7 +49,7 @@ def _run(root: Path, worktree: Path) -> None:
                 "task": {
                     "slug": "harness-fail",
                     "current_step": "spec",
-                    "next_step": "gherkin",
+                    "next_step": "scenarios",
                 },
                 "scope": {"worktree_path": str(worktree)},
                 "artifacts": {},

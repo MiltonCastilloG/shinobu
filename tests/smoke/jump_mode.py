@@ -40,17 +40,17 @@ def run(root: Path) -> None:
 
         wt = tmpdir / "to-spec"
         wt.mkdir()
-        _put(wt / "current-task/story.md", "# Story\n")
+        _put(wt / "current-task/scenarios.json", "{}\n")
         seed = _summary(
             wt,
             "seed.json",
             {
-                "completed_step": "gherkin",
-                "artifact": "current-task/story.md",
+                "completed_step": "scenarios",
+                "artifact": "current-task/scenarios.json",
                 "task": {"original": "demo", "slug": "demo"},
             },
         )
-        proc, _ = _write(update, root, wt, seed, "--step", "gherkin")
+        proc, _ = _write(update, root, wt, seed, "--step", "scenarios")
         if proc.returncode != 0:
             raise AssertionError(f"fail: seed: {proc.stdout}{proc.stderr}")
 
@@ -115,13 +115,13 @@ def run(root: Path) -> None:
             wt2,
             "seed.json",
             {
-                "completed_step": "gherkin",
-                "artifact": "current-task/story.md",
+                "completed_step": "scenarios",
+                "artifact": "current-task/scenarios.json",
                 "task": {"slug": "x", "original": "x"},
             },
         )
-        _put(wt2 / "current-task/story.md", "- [ ] a\n")
-        proc, _ = _write(update, root, wt2, seed2, "--step", "gherkin")
+        _put(wt2 / "current-task/scenarios.json", "{}\n")
+        proc, _ = _write(update, root, wt2, seed2, "--step", "scenarios")
         if proc.returncode != 0:
             raise AssertionError(f"fail: seed2: {proc.stdout}{proc.stderr}")
         arts_before = dict(_status(wt2).get("artifacts") or {})

@@ -7,7 +7,7 @@
 ```
 <prefix>/docs/archive/<slug>/report.json
 <prefix>/docs/archive/<slug>/report.md
-<prefix>/docs/archive/<slug>/story.md      # copy from artifacts.story when present
+<prefix>/docs/archive/<slug>/scenarios.json  # copy from artifacts.scenarios when present
 <prefix>/docs/archive/<slug>/errors.json   # verbatim copy when the caller named an errors path
 ```
 
@@ -24,7 +24,7 @@ Caller packs the paths. Task archive: read `current-task/status.json` — [statu
 
 | Step | Artifact pointer | Summary source |
 |------|------------------|----------------|
-| `gherkin` | `artifacts.story` | story exists → brief line from story title or slug |
+| `scenarios` | `artifacts.scenarios` | scenarios exist → brief line from `feature.title` or slug |
 | `spec` | `artifacts.spec` | `meta.summary` or spec `title` |
 | `review` | (none — review writes no file) | verdict as relayed in chat |
 | `sync` | (none) | branch pushed |
@@ -133,5 +133,5 @@ When `<prefix>/docs/archive/<slug>/errors.json` was copied from a caller-named p
 ## Rules
 
 - Compact — summarize, don't copy `current-task/` tree.
-- `report.json` and `report.md` required before second sync (commit/push) and integrate. `story.md` is a copy, never a requirement — see the Outputs list.
+- `report.json` and `report.md` required before second sync (commit/push) and integrate. `scenarios.json` is a copy, never a requirement — see the Outputs list.
 - Always write under `<prefix>/docs/archive/<slug>/` — never invent another archive root.

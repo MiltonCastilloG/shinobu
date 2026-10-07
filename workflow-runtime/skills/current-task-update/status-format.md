@@ -32,13 +32,13 @@ Document bodies live as separate files; status holds **position**, document **po
 | `slug` | Yes | Worktree folder slug |
 | `project` | No | Managed project name |
 | `title` | No | Short title |
-| `original` | Yes | Short slug or one-line title after gherkin; start slug until then |
+| `original` | Yes | Short slug or one-line title after scenarios; start slug until then |
 | `type` | No | `feature`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf` |
 | `current_step` | Yes | Step Shinobu is on or just completed |
 | `next_step` | Yes | Next step Shinobu should propose — **workflow source of truth** |
 | `side_effects` | No | Append-only log of jump runs |
 
-Step values: `start`, `spec`, `gherkin`, `review`, `acceptance`, `sync`, `archive`, `integrate`, `close`, `done`.
+Step values: `start`, `spec`, `scenarios`, `review`, `acceptance`, `sync`, `archive`, `integrate`, `close`, `done`.
 
 Do **not** persist `completed_step` / `completed_steps` — consumers use `next_step`.
 
@@ -64,7 +64,7 @@ Worktree-relative pointers to **document** outputs only. Gates resolve `worktree
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `story` | No | `current-task/story.md` |
+| `scenarios` | No | `current-task/scenarios.json` |
 | `spec` | No | Spec JSON path |
 | `archive` | No | `docs/archive/<slug>/report.json` |
 
@@ -91,7 +91,7 @@ A plain string is accepted too, for questions that need no options.
 
 ## Acceptance / review outcomes
 
-Shinobu sets `next_step` from chat and the sheep summary (e.g. after review → `acceptance`, or `gherkin` / `spec` when changes are needed). No readiness file on disk.
+Shinobu sets `next_step` from chat and the sheep summary (e.g. after review → `acceptance`, or `scenarios` / `spec` when changes are needed). No readiness file on disk.
 
 ## Example
 
@@ -104,14 +104,14 @@ Shinobu sets `next_step` from chat and the sheep summary (e.g. after review → 
     "project": "castlemill-landing",
     "original": "hero-section",
     "type": "feature",
-    "current_step": "gherkin",
+    "current_step": "scenarios",
     "next_step": "review"
   },
   "scope": {
     "worktree_path": "worktrees/castlemill-landing-hero-section"
   },
   "artifacts": {
-    "story": "current-task/story.md",
+    "scenarios": "current-task/scenarios.json",
     "spec": "current-task/specs/hero-section.json"
   },
   "open_questions": []

@@ -8,7 +8,7 @@ Skills are **pure functionality** — portable operation manuals with no knowled
 | **Sheep** (`workflow-runtime/agents/sheep-*.md`) | Workflow binding: run one skill in isolated context, return JSON | Shinobu on the pipeline; direct Task spawn for ad-hoc |
 | **Shinobu** (`workflow-runtime/agents/shinobu.md`) | Full pipeline, transitions, user confirmations | User says `shinobu …` |
 
-Pipeline leaf skills: `story-maker`, `spec-maker`, `review-execution`, …
+Pipeline leaf skills: `scenario-maker`, `spec-maker`, `review-execution`, …
 
 ## Invocation policy
 

@@ -15,7 +15,7 @@ Workflow for Cursor and Claude Code. Shinobu orchestrates the current-task pipel
 | Skills | `workflow-runtime/skills/<name>/` | Pure functionality — how to perform one job; artifact schemas |
 | Skill index | `workflow-runtime/skills/README.md` | Skills vs agents rules and exceptions |
 
-Ad-hoc work outside the pipeline: Task-spawn the sheep directly with instructions and an output path (default `docs/adhoc/`), or attach the skill (e.g. `spec-maker`, `story-maker`, `conflict-resolution`) to do the work inline. No task, worktree, or status write is involved. `sheep-start`, `sheep-close`, and `sheep-status` stay Shinobu-only.
+Ad-hoc work outside the pipeline: Task-spawn the sheep directly with instructions and an output path (default `docs/adhoc/`), or attach the skill (e.g. `spec-maker`, `scenario-maker`, `conflict-resolution`) to do the work inline. No task, worktree, or status write is involved. `sheep-start`, `sheep-close`, and `sheep-status` stay Shinobu-only.
 
 ### Three layers
 
@@ -67,7 +67,7 @@ shinobu start my-task
 shinobu continue
 ```
 
-The parent agent Task-spawns the `shinobu` subagent (see `.cursor/rules/shinobu-default.mdc`, generated from `workflow-runtime/rules/shinobu-default.md`). Shinobu asks before sync and sends sheep (`sheep-start`, `sheep-spec`, `sheep-gherkin`, `sheep-review`, …); the consent before the first red arrives with the loop. After every sheep except start and close, Shinobu sends `sheep-status` to update `current-task/status.json`.
+The parent agent Task-spawns the `shinobu` subagent (see `.cursor/rules/shinobu-default.mdc`, generated from `workflow-runtime/rules/shinobu-default.md`). Shinobu asks before sync and sends sheep (`sheep-start`, `sheep-spec`, `sheep-scenarios`, `sheep-review`, …); the consent before the first red arrives with the loop. After every sheep except start and close, Shinobu sends `sheep-status` to update `current-task/status.json`.
 
 Git steps (`sync`, `integrate`) need explicit confirmation. Archive and close need separate confirms. Close asks to confirm worktree delete only.
 
@@ -110,14 +110,14 @@ and the smokes on every push.
 ## Pipeline
 
 ```
-start → spec → gherkin → review → acceptance → sync → archive → sync → integrate → close
+start → spec → scenarios → review → acceptance → sync → archive → sync → integrate → close
 ```
 
 Post-review routing comes from the review sheep's return `summary`, not from a file on disk:
 
 | Verdict | Next |
 | ------- | ---- |
-| changes required | Shinobu relays the verdict; with approval, jumps to `gherkin` to append a scenario (or to `spec` when the spec is wrong) |
+| changes required | Shinobu relays the verdict; with approval, jumps to `scenarios` to append a scenario (or to `spec` when the spec is wrong) |
 | ready | Shinobu `acceptance` checkpoint — sync blocked until user accepts |
 | blocked | Shinobu asks user |
 
@@ -129,7 +129,7 @@ Shinobu-only step: `acceptance`.
 | ---- | ----- | --------------- | -------------- |
 | Setup | `sheep-start` | — (creates worktree + registry) | worktree + `global-status.json` entry |
 | Spec | `sheep-spec` | status, free text / `task.original` | `current-task/specs/<slug>.json` |
-| Gherkin | `sheep-gherkin` | spec path | `current-task/story.md` (Gherkin checklist) |
+| Scenarios | `sheep-scenarios` | spec path | `current-task/scenarios.json` (ordered Gherkin scenarios) |
 | Review | `sheep-review` | worktree diff + available current-task files | no file — verdict in the return `summary` |
 | Sync / archive / integrate | `sheep-sync`, `sheep-archive`, `sheep-integrate` | status, worktree | git side effects; `docs/archive/<slug>/` from archive only |
 | Close | `sheep-close` | status | worktree deleted; unregister `global-status.json` |
@@ -144,7 +144,7 @@ global-status.json                         # workspace root; sheep-start / sheep
 
 worktrees/<path>/current-task/
   status.json                              # sheep-status only
-  story.md
+  scenarios.json
   specs/<slug>.json
 ```
 

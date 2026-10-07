@@ -14,4 +14,4 @@ Run `workflow-runtime/skills/review-execution/SKILL.md`. Report findings in the 
 
 ## Return
 
-No `artifact`. `open_questions`; `summary` (verdict your caller can turn into `next_step`: acceptance / gherkin / spec / review; include the blocking findings when changes are needed). Do not name pipeline position.
+No `artifact`. `open_questions`; `summary` (verdict your caller can turn into `next_step`: acceptance / scenarios / spec / review; include the blocking findings when changes are needed). Do not name pipeline position.

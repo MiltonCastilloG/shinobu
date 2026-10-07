@@ -38,7 +38,7 @@ Ad-hoc needs no task, worktree, or `status.json` — only instructions. Task-spa
 
 Pack the prompt with the user's instructions plus:
 
-- **Document sheep** (`sheep-gherkin`, `sheep-spec`) — an output path. Use the user's path when they name one, otherwise a sensible file under `docs/adhoc/`. For `sheep-gherkin`, also pack the spec path. For `sheep-spec`, also pack a pause path (e.g. under `docs/adhoc/`) so the sheep can stop mid-run without losing exploration.
+- **Document sheep** (`sheep-scenarios`, `sheep-spec`) — an output path. Use the user's path when they name one, otherwise a sensible file under `docs/adhoc/`. For `sheep-scenarios`, also pack the spec path. For `sheep-spec`, also pack a pause path (e.g. under `docs/adhoc/`) so the sheep can stop mid-run without losing exploration.
 - **Archive sheep** (`sheep-archive`) — always `<prefix>/docs/archive/<slug>/`. Pass `prefix` (workspace or nested-project root) and `slug`; never `docs/adhoc/`. Also pass status/artifact paths or a `source_document`, and an errors path when one exists.
 - **Operational sheep** (`sheep-review`) — the working directory. If unclear, ask the user with `AskQuestion`; do not guess.
 - **Git sheep** (`sheep-sync`, `sheep-integrate`) — get an explicit yes naming the side effect before spawning.
