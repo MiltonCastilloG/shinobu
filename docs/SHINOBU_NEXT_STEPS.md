@@ -68,7 +68,7 @@ Lives on **Nicki**. Shinobu copies this head later. No Shinobu agent yet.
 
 Live map: [`OWNERSHIP.md`](OWNERSHIP.md).
 
-Do not prefix generic names for collision avoidance. Agents stay flat. Keep `sheep-start`, `sheep-status`, `sheep-close`, `sheep-subtask`, `sheep-execute`, `status.json`, `story.md`, `specs/`, `subtasks/`, and `global-status.json`.
+Do not prefix generic names for collision avoidance. Agents stay flat. Keep `sheep-start`, `sheep-status`, `sheep-close`, `status.json`, `scenarios.json`, `specs/`, and `global-status.json` (Nicki's `sheep-subtask`, `sheep-execute`, `story.md`, `subtasks/` did not carry over).
 
 Stage 1 still audits hardcoded Nicki paths so the fork boundary is explicit. Product-facing selector, routing, bootstrap environment, workspace/config/version filenames, and installer text change in the Shinobu fork.
 
