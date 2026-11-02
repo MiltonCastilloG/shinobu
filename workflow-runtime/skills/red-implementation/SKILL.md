@@ -24,7 +24,7 @@ When any input is missing, return the question in `open_questions` and stop.
 - **Step definitions** — code bound to Gherkin steps.
 - **Test support** — fixtures, helpers, hooks, and test config used only by tests.
 - **Implementation** — everything the product runs.
-- **Generated** and **shared** files (used by both tests and implementation) are unowned. Leave them alone.
+- **Generated** files, and **shared** files — package manifests, lockfiles, build and runner config, and anything else both the tests and the product configure — are unowned. Leave them alone. Product code that tests merely import or call is implementation, not shared.
 
 Write only feature files, step definitions, and test support. A file you cannot classify: do not edit it; return the question.
 
@@ -42,25 +42,26 @@ Task Progress:
 
 ### Step 1: Check the setup
 
-Confirm the worktree exists and the project has a Gherkin runner. Confirm the run command targets one scenario, not a suite. No runner, or a command that is not scoped to one scenario: return the question and stop. Do not install a runner or edit its config.
+Confirm the worktree exists and the project has a Gherkin runner. Confirm, by reading the command, that it targets one scenario and not a suite. Do not execute it, or any other test command, before Step 4. No runner, or a command that is not scoped to one scenario: return the question and stop. Do not install a runner or edit runner config; it is shared.
 
 ### Step 2: Write the scenario
 
 Write the `gherkin` string into the feature file **unchanged**: no parsing, translating, rewording, or reformatting. The `Scenario:` line equals the scenario's `title`.
 
-- File exists: append the block. Never rewrite or reorder existing scenarios.
-- File does not exist: create it with a `Feature:` line, then the block.
+- File exists and already holds a block whose `Scenario:` line equals the title: if that block is identical, leave the file as it is; if it differs, return the question.
+- File exists otherwise: append the block. Never rewrite or reorder existing scenarios.
+- File does not exist: create it with a `Feature:` line named after the file stem, then the block.
 
 ### Step 3: Write step definitions
 
-Find the project's existing step-definition layout (directory, naming, binding style) and extend it. Reuse steps that already match. Add only the missing ones. No clear layout: return the question and stop.
+Find the project's existing step-definition layout (directory, naming, binding style) and extend it. Reuse steps that already match. Add only the missing ones. No clear layout: return the question and stop. Do not change the behavior of an existing step definition; if one must change, return the question.
 
 Make missing implementation fail **at `Then`, not at import**. Reach the behavior without importing code that does not exist yet:
 
-- **Lazy import** — import the module inside the step body, so a missing module surfaces where the step runs. Only valid if the step's failure then lands on an assertion at `Then`; an import error is a wrong failure.
+- **Lazy import** — resolve the module inside the step body and turn its absence into an assertion failure at `Then`: for example, catch the import error and fail an assertion naming the missing symbol. An import error that escapes the step is a wrong failure.
 - **Public surface** — drive and observe the behavior through what the product exposes (HTTP request, DOM query, CLI output, file written), so the assertion fails on a missing result instead of a missing symbol.
 
-`Given` and `When` steps must be able to complete against the current code. The `Then` step holds the assertion. If the runner makes this impossible, return the question. Never stub, mock out, or pre-create implementation to dodge the failure.
+`Given` and `When` steps must be able to complete against the current code. A `When` that invokes behavior which may not exist yet records the outcome (return value, response, output, or raised error) in the scenario context instead of raising, and the `Then` asserts on it. Never move the action into the `Then`. The `Then` step holds the assertion. If the runner makes this impossible, return the question. Never stub, mock out, or pre-create implementation to dodge the failure.
 
 ### Step 4: Run once
 

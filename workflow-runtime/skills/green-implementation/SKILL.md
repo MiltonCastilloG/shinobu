@@ -16,7 +16,7 @@ Given uncommitted changes that include one failing test, make the **smallest imp
 
 The material is **the diff**: `git diff HEAD` plus the untracked files listed by `git status --porcelain` (read them). Plain `git diff` misses new files. Read the failing test from the diff; you receive nothing else about it.
 
-When the run command is missing, or the diff holds no failing test to satisfy, return the question and stop.
+When the run command is missing, or the diff holds no test for you to satisfy, return the question and stop.
 
 ## File classes
 
@@ -24,9 +24,9 @@ When the run command is missing, or the diff holds no failing test to satisfy, r
 - **Step definitions** — code bound to Gherkin steps.
 - **Test support** — fixtures, helpers, hooks, and test config used only by tests.
 - **Implementation** — everything the product runs.
-- **Generated** and **shared** files (used by both tests and implementation) are unowned. Leave them alone.
+- **Generated** files, and **shared** files — package manifests, lockfiles, build and runner config, and anything else both the tests and the product configure — are unowned. Leave them alone. Product code that tests merely import or call is implementation, not shared.
 
-A file is implementation when the product runs it and no test-side class describes it. Write only implementation. A file you cannot classify: do not edit it; return the question.
+A file is implementation when the product runs it and it is not test-side, generated, or shared. Product code that tests merely import or call is implementation. Write only implementation. A file you cannot classify: do not edit it; return the question.
 
 ## Procedure
 
@@ -52,7 +52,7 @@ Stop and return the question when:
 - the test cannot pass without touching the test side;
 - the change needs a product decision the test does not settle.
 
-State the reason. Revert nothing you did not write; leave any partial edit out by not making it before you stop.
+State the reason. Decide before editing: if you must stop, stop before making the change. Never undo files with git.
 
 ### Step 3: Run once
 
