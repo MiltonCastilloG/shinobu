@@ -35,8 +35,8 @@ A worktree belongs to whichever repository created it.
 | ----- | ----- | ------ |
 | `sheep-red` | **One Gherkin scenario** (Shinobu packs it — one object from `scenarios.json`: id, title, gherkin text — the way it packs a spec path). Worktree as scope. | Step definitions + a run. Success: the test **fails right**. Anything else is an **error** (`open_questions`); the loop stops. |
 | `sheep-green` | **The git diff only** (uncommitted tree after red). | Smallest change that makes the failing test pass. Does not edit the test. Does not touch `scenarios.json`. |
-| `sheep-green-refactor` | **The post-loop git diff.** Runs **first**. | Revises implementation only: simplify, remove duplication, and improve implementation abstractions without changing behavior. Exact implementation-file scope is deliberately open until build time. |
-| `sheep-red-refactor` | **The git diff after `sheep-green-refactor`.** Runs **second**. | Revises tests only: simplify, remove duplication, and improve test abstractions without changing scenario meaning. Exact test-file scope is deliberately open until build time. |
+| `sheep-green-refactor` | **The post-loop git diff.** Runs **first**. | Revises implementation only: simplify, remove duplication, and improve implementation abstractions without changing behavior. Write domain: implementation, plus deleting unused dependencies from the manifest. |
+| `sheep-red-refactor` | **The git diff after `sheep-green-refactor`.** Runs **second**. | Revises tests only: simplify, remove duplication, and improve test abstractions without changing scenario meaning. Write domain: step definitions, test support, and feature-file comments. |
 
 Existing step-definition files are just code in the worktree. Red sees them the way execute sees existing source — it does not need a pointer. Shinobu's job is to pack the **next scenario** into red, not to teach red where steps live.
 
@@ -91,7 +91,7 @@ After the yes before the first red, Shinobu runs red → green for every remaini
 
 Red and green each do **one write and one run of this scenario**, then return (`task: false`). `open_questions` still stops on a real error (red failed wrong, etc.). The user is not polled between them.
 
-The two refactor sheep run **one after the other**: `sheep-green-refactor` on the post-loop diff, then `sheep-red-refactor` on the diff that leaves. Sequential on purpose — refactoring implementation and tests at the same time lets one mask the other's regression, and the order means tests are tidied last, against implementation that has already settled. Each is an ordinary step with its own `sheep-status` after it. Each still owns a file domain and leaves the other's files alone; exact boundaries remain open until these sheep are built.
+The two refactor sheep run **one after the other**: `sheep-green-refactor` on the post-loop diff, then `sheep-red-refactor` on the diff that leaves. Sequential on purpose — refactoring implementation and tests at the same time lets one mask the other's regression, and the order means tests are tidied last, against implementation that has already settled. Each is an ordinary step with its own `sheep-status` after it. Each still owns a file domain and leaves the other's files alone; the boundaries are stated in each refactor skill's Write domain section.
 
 ---
 

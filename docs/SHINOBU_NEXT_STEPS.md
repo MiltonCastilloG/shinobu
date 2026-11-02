@@ -31,7 +31,7 @@ Run Stage 1 and the neutral-runtime extract before the fork so both products inh
 | Consent | Once before first red; once after review. Red / green and the two final refactors run uninterrupted — no clock. |
 | Red | Input = **one Gherkin scenario** packed by Shinobu. Success = fails right. Else error / hold. |
 | Green | Input = **git diff only**. Does not edit the test or `scenarios.json`. |
-| Final refactors | **Serial, in this order:** `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Sequential so neither can mask the other's regression, and tests are tidied last against settled implementation. Each owns a file domain; exact scope is open until build time. |
+| Final refactors | **Serial, in this order:** `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Sequential so neither can mask the other's regression, and tests are tidied last against settled implementation. Each owns a file domain, settled at the S3b audit: implementation (plus unused-dependency removal) for green-refactor; step definitions, test support, and feature-file comments for red-refactor; generated and other shared files for neither. |
 | Amend | Append as a **new** scenario object with `done: false`. Final refactors or the human catch duplication. |
 | Cursor | `scenarios.json`. The **loop** packs the first `done: false` scenario into red; after green succeeds, the **same loop** sets `done: true` programmatically. Not green. Exact flip is for loop-build time. Exit: none left. JSON so the loop script reads and flips without parsing Markdown. |
 | Loop implementation | Plain in-repo script, invoked synchronously in the live session — not a background daemon, not a graph framework. |
@@ -125,7 +125,7 @@ Dogfood on a project that already has a runner.
 
 | Question | Notes |
 | -------- | ----- |
-| Refactor scope | Define implementation-owned vs test-owned paths, including step definitions, fixtures/helpers, generated files, and shared utilities. Still needed although the refactors are now serial — each sheep must know what it may not touch. Do not settle this until the sheep are built. |
+| — | Nothing open. Refactor scope was settled at the S3b audit (Final refactors row above). |
 
 Black sheep membership is Stage 3's audit, not an open product question.
 

@@ -277,7 +277,7 @@ Human-gated. Run Shinobu on a managed clone that already has a test runner — `
 
 | Question | When it must be answered |
 | -------- | ------------------------ |
-| Refactor write domains — implementation-owned vs test-owned paths, including step definitions, fixtures/helpers, generated files, shared utilities. Serial execution removed the concurrency hazard, not the need for the boundary | S3b proposes; human decides at the S3b audit, before S4 wires the pair. Settled nowhere before then, by design. |
+| Refactor write domains — implementation-owned vs test-owned paths, including step definitions, fixtures/helpers, generated files, shared utilities. Serial execution removed the concurrency hazard, not the need for the boundary | **Settled at the S3b audit** — see each refactor skill's Write domain section. |
 | Which managed project S6 dogfoods on | Before S6. Needs a project that already has a runner. |
 
 ---

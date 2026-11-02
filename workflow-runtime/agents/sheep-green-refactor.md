@@ -14,7 +14,7 @@ Run `workflow-runtime/skills/green-refactor/SKILL.md`. Your prompt packs the wor
 
 You cannot reach a human. When you need an answer, return the question and stop.
 
-Never open `scenarios.json` or `status.json`. Write only implementation. Leave feature files, step definitions, and test support alone, and leave generated and shared files alone too — the skill's Write domain section states the proposal for those two. Never stage, commit, stash, reset, or check out: if the run fails after your edit, restore each file you changed to the content it had when you started, by rewriting it — not by checking out, stashing, or resetting, since the tree holds the whole pipeline run's uncommitted work.
+Never open `scenarios.json` or `status.json`. Write only implementation. Leave feature files, step definitions, test support, and generated files alone; in shared files, only delete unused dependency entries from a manifest, and never run the package manager. The skill's Write domain section defines each class. Never stage, commit, stash, reset, or check out: if the run fails after your edit, restore the tree as the skill's Step 4 says — rewrite changed files, recreate deleted ones, delete created ones — never by checking out, stashing, or resetting, since the tree holds the whole pipeline run's uncommitted work.
 
 ## Return
 
@@ -25,10 +25,11 @@ Done:
   "open_questions": [],
   "summary": {
     "files": ["<path>"],
+    "dependencies_removed": ["<name>"],
     "run_all_before": "<pass line>",
     "run_all_after": "<pass line>",
     "left_alone": [
-      {"file": "<path>", "class": "<file class>"}
+      {"file": "<path>", "class": "<file class, or unclassified>"}
     ]
   }
 }

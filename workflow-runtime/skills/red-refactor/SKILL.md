@@ -22,26 +22,29 @@ When the run command is missing, return the question and stop without editing.
 
 - **Feature files** — Gherkin `.feature` files.
 - **Step definitions** — code bound to Gherkin steps.
-- **Test support** — fixtures, helpers, hooks, and test config used only by tests.
-- **Implementation** — everything the product runs.
-- **Generated** and **shared** files (used by both tests and implementation) — see Write domain below.
+- **Test support** — fixtures, helpers, hooks, and test config used only by tests. Runner config is shared, not test support.
+- **Implementation** — everything the product runs that is not test-side, generated, or shared. Product code that tests merely import or call is implementation.
+- **Generated** — files produced by a build or tool.
+- **Shared** — package manifests, lockfiles, build and runner config, and anything else both the tests and the product configure.
 
 ## Write domain
 
 | File class | This skill |
 |------------|------------|
-| Feature files | owns, restricted (see below) |
+| Feature files | comments only (see below) |
 | Step definitions | owns |
 | Test support | owns |
 | Implementation | never touches |
 | Generated | unowned, left alone |
 | Shared | unowned, left alone |
 
-Step definitions and test support are this skill's main material. Implementation never changes here — the implementation-focused refactor already settled it, and touching it here would let this skill mask a regression that refactor exists to catch. Generated and shared files are left alone: a generated file may be overwritten by whatever produced it, and a shared file is read by both the test side and the implementation, so editing it here risks moving behavior on a side this skill never runs against.
+Step definitions and test support are this skill's main material. Implementation never changes here: it was settled by the implementation-focused refactor that ran before, and the test side is its oracle — changing both in one pass lets a behavior change pass unnoticed. Generated files are rewritten by the tool that produced them, and shared files configure what runs for both sides, so a change to either is not a refactor.
 
-**Feature files are restricted.** A scenario's meaning lives in its `Scenario:`, `Given`, `When`, `Then`, `And`, and `But` lines, and no refactor may rewrite them — that text has to stay byte-for-byte so later verification can still find the scenario by its `Scenario:` line. Within a feature file this skill may edit only the `Feature:` line, `Background:` blocks, comments, and tags. Never reorder scenarios or renumber/rename a scenario's own lines.
+**Feature files: comments only.** A feature file's Gherkin is the scenarios themselves. No refactor rewrites it, and later verification finds each scenario by its `Scenario:` line. Within a feature file this skill may edit comments only. Never edit the `Feature:` line, `Rule:`, `Background:`, `Scenario:`, `Scenario Outline:`, `Examples:`, any step line (`Given`, `When`, `Then`, `And`, `But`, `*`), data tables, doc strings, or tags, and never reorder scenarios.
 
-A file in the diff that does not fit a class, or fits a class this skill does not own: do not edit it; record it and move on (see Report).
+**Assertions are fixed.** Never remove, weaken, or skip an assertion, a step, or a test. Every step definition must still do and assert exactly what it did; restructure how, never what.
+
+Edit only test-side files in the diff, plus new files you create for code you extract from them. A file in the diff that does not fit a class, or fits a class this skill does not own: do not edit it; record it and move on (see Report).
 
 ## Procedure
 
@@ -56,22 +59,22 @@ Task Progress:
 
 ### Step 1: Confirm the starting point
 
-Run the full-suite command once, before making any edit. It must pass. If it does not, return the question with the output excerpt and stop — do not edit anything.
+Run the full-suite command once, before making any edit. It must pass: exit status 0, with no failed, errored, undefined, or pending tests or scenarios. Do not retry. A failure — flaky, pre-existing, or otherwise — is a question, not a pass: return it with the output excerpt and stop without editing anything.
 
 ### Step 2: Read the diff
 
-Read the changed and untracked files and classify each against the classes above. For every file you are about to touch, record its current content first (in memory or a scratch copy), so you can restore it exactly if the suite fails later. Files outside the write domain: leave them untouched and note each one with its file class for the report.
+Read the changed and untracked files and classify each against the classes above. Before the first edit, record the current content of every file you will change or delete, and the path of every file you will create (in memory or a scratch copy), so you can restore the tree exactly. Files outside the write domain: leave them untouched and note each one with its file class — `unclassified` when it fits none — for the report.
 
 ### Step 3: Simplify the test side
 
-Within step definitions and test support: remove duplication, improve abstractions, reduce indirection — whatever makes the tests clearer without changing what any scenario means. Within feature files: edit only the `Feature:` line, `Background:` blocks, comments, and tags, per the restriction above. Do not touch a `Scenario:`, `Given`, `When`, `Then`, `And`, or `But` line anywhere in the file, including scenarios outside the diff. Do not add functionality or touch any file outside the test side.
+Within step definitions and test support: remove duplication, improve abstractions, reduce indirection — whatever makes the tests clearer, under the assertion rule above. Within feature files: comments only. Do not add functionality or touch any file outside the test side.
 
 ### Step 4: Run once, after
 
-Run the full-suite command exactly once.
+Run the full-suite command exactly once. Pass means the same as in Step 1.
 
-- Still passes → done.
-- Does not pass → restore every file you changed to the content you recorded in Step 2. Never use `git checkout`, `git stash`, or `git reset` to do this — other uncommitted work may be sitting in the same tree. Then return the question with the output excerpt, naming what you changed.
+- Passes → done.
+- Does not pass → restore the tree to what you recorded in Step 2: rewrite each changed file to its recorded content, recreate each file you deleted, and delete each file you created. Never use `git checkout`, `git stash`, or `git reset` — other uncommitted work sits in the same tree. Then return the question with the output excerpt, naming what you changed.
 
 ### Step 5: Report
 
@@ -81,10 +84,12 @@ Run the full-suite command exactly once.
 
 ## Safety rules
 
-- Write only feature files (restricted), step definitions, and test support
+- Write only step definitions, test support, and comments in feature files
+- Never edit any non-comment line of a feature file
+- Never remove, weaken, or skip an assertion, step, or test
 - Never edit implementation
 - Never edit generated or shared files
-- Never touch a `Scenario:`, `Given`, `When`, `Then`, `And`, or `But` line of any scenario
+- Never edit a file outside the diff, except new files you create for extracted code
 - Never touch a file you cannot classify
 - Never stage, commit, stash, reset, or check out
 - When in doubt, return the question and stop — do not guess
