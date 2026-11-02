@@ -2,7 +2,7 @@
 
 Input for a later review run when prior guidance exists on disk.
 
-Default path: `current-task/review-inputs/rN-review.json`.
+This file is read only when the caller packs its path explicitly — there is no default location.
 
 ## Fields
 
