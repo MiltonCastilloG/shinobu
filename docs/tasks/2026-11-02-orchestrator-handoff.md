@@ -56,7 +56,7 @@ S2  remove the Nicki tail                        done  (5478d3a)
 S2a scenarios.json + one name at every level      done  (5bbf848 ∥ 1d18dc6, merged e9b1d6d)
  │
  ├─────────────┬─────────────┐
-S3a red+green  S3b refactors S3c review          ← NEXT. Three workers, parallel.
+S3a red+green  S3b refactors S3c review          done and audited — S4 next (carry-overs in tasks.md).
  └─────────────┴─────────────┘
  │
 S4  loop + routing + status + permissions         serial, depends on all of S3

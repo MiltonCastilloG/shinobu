@@ -15,7 +15,7 @@ The caller packs: worktree path, spec path (when present), scenario-list path, a
 Two duties run on every review, and neither is optional:
 
 - **Regression check** — run `run_all` against the whole suite and report any failing test as a blocking `[regression]` finding, regardless of whether it looks pre-existing.
-- **Scenario compliance** — for every scenario-list entry with `done: true`, confirm it is present verbatim in a feature file, passed in the `run_all` run, and genuinely satisfied by the implementation (not a trivial, skipped, or mocked assertion). Report failures as `[scenario-<id>]`.
+- **Scenario compliance** — for every scenario-list entry with `done: true`, confirm it is present verbatim in a feature file, ran and passed in the `run_all` run (skipped, pending, or not run counts as not passed), and genuinely satisfied by the implementation (not a trivial, skipped, or mocked assertion). Report failures as `[scenario-<id>]`. Any entry still `done: false` is blocking.
 
 ## Return
 

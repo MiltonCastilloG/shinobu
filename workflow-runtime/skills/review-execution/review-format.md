@@ -36,7 +36,7 @@ Use a JSON string (use `\n` for newlines). Write in plain language with consiste
 
 ### When `approved: true`
 
-Brief pass summary (2–5 lines). Mention requirements coverage, verify results, and scope.
+Brief pass summary (2–5 lines). Mention the regression run result, scenario compliance (count of `done: true` scenarios present, passed, and satisfied), requirements coverage, verify results, and scope.
 
 ```json
 {
@@ -91,7 +91,7 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 
 You cannot reach a human. Return the question in `open_questions` and stop — no verdict — when:
 
-- Spec or scenarios is missing and partial review is insufficient
+- The scenario list path or `run_all` is missing
 - A requirement is subjective and pass/fail is unclear
 - Verify commands cannot run (missing deps, wrong branch base)
 - Git history makes change discovery unreliable
