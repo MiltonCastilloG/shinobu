@@ -14,7 +14,6 @@ Schemas:
 
 - Per-task: [status-format.md](status-format.md)
 - Global registry (read only): [global-status-read.md](global-status-read.md)
-- Legacy (deprecated): [current-task-context-format.md](current-task-context-format.md)
 
 ## When to use
 

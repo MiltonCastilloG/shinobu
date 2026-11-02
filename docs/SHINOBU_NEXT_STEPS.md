@@ -146,7 +146,7 @@ Done and recorded in [`tasks/tasks-done.md`](tasks/tasks-done.md): Stage 1 behav
 
 ### Defer
 
-Caller-owned output *shape* (all sheep). PLAN CLI, multi-project dogfood, AWS, evaluation harness/repository. Quoting polish (optional → `story-format.md`).
+Caller-owned output *shape* (all sheep). PLAN CLI, multi-project dogfood, AWS, evaluation harness/repository. Quoting polish (optional → `scenario-format.md`).
 
 ### Stop
 

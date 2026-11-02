@@ -69,7 +69,7 @@ Nothing below blocks Stage 2. **22–25 are mutually independent — any or all 
 | | PLAN CLI + multi-project dogfood | [`PLAN.md`](../PLAN.md) — schema, `workspace init` / clone / install / doctor |
 | | Caller-owned output shape | [`caller-owned-output-shape.md`](caller-owned-output-shape.md) — revisit once the Stage 2 sheep exist; archive-only bugs if they bite |
 | | Stage 3 — black sheep | Audit which sheep are ad-hoc-only, then `black-sheep-testing-scaffold` (runner + step-definition layout). [`SHINOBU_NEXT_STEPS.md`](../SHINOBU_NEXT_STEPS.md) |
-| | Quoting polish | Optional only — [`story-format.md`](../../workflow-runtime/skills/scenario-maker/story-format.md). Not a rewrite. |
+| | Quoting polish | Optional only — [`scenario-format.md`](../../workflow-runtime/skills/scenario-maker/scenario-format.md). Not a rewrite. |
 
 **Not doing:** shared runtime package, submodule, or subtree · any Nicki↔Shinobu sync or cherry-pick automation · product-suffixed sheep or artifact names · a `--pipeline` flag · Claude hook parity or a generated Claude permissions adapter · branch protection on `main` · `doctor` / version pin · evaluation harness or repository.
 
