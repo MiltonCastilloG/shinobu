@@ -4,7 +4,7 @@
 
 **Reads:** [`SHINOBU_NEXT_STEPS.md`](../SHINOBU_NEXT_STEPS.md) (the "Settled — do not reopen" table is binding) · [`SHINOBU.md`](../SHINOBU.md) · [`OWNERSHIP.md`](../OWNERSHIP.md) · [`2026-09-19-runtime-extract-and-delivery-options.md`](2026-09-19-runtime-extract-and-delivery-options.md)
 
-**Where we are:** this repository is a history-preserving clone of Nicki at `v0.3.0-nicki-baseline`, `origin` already pointed at `MiltonCastilloG/shinobu`. `python3 test.py` is green on 15 smoke modules. Nothing Shinobu-specific exists yet.
+**Where we are (updated through S2a):** S1, S2, and S2a are committed and audited — identity renamed to `shinobu`, the Nicki tail removed, and the gherkin step renamed to `scenarios` writing `current-task/scenarios.json`. `python3 test.py` is green on 15 smoke modules. Routing chain today: `start → spec → scenarios → review → acceptance → sync → archive → sync → integrate → close → done` — `scenarios → review` is S2's deliberate placeholder; S4 repoints it at `red`. Group C (S3a, S3b, S3c) is next, in parallel; see §4 and `tasks.md` for current row status. Full history of what shipped and what the audits found: [`tasks-done.md`](tasks-done.md).
 
 ---
 
