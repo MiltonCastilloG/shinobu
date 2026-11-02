@@ -129,7 +129,7 @@ Shinobu-only step: `acceptance`.
 | ---- | ----- | --------------- | -------------- |
 | Setup | `sheep-start` | — (creates worktree + registry) | worktree + `global-status.json` entry |
 | Spec | `sheep-spec` | status, free text / `task.original` | `current-task/specs/<slug>.json` |
-| Scenarios | `sheep-scenarios` | spec path | `current-task/scenarios.json` (scenario array) |
+| Scenarios | `sheep-scenarios` | spec path | `current-task/scenarios.json` (ordered Gherkin scenarios) |
 | Review | `sheep-review` | worktree diff + available current-task files | no file — verdict in the return `summary` |
 | Sync / archive / integrate | `sheep-sync`, `sheep-archive`, `sheep-integrate` | status, worktree | git side effects; `docs/archive/<slug>/` from archive only |
 | Close | `sheep-close` | status | worktree deleted; unregister `global-status.json` |

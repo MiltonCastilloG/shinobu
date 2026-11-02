@@ -15,17 +15,17 @@ Restated so a worker prompt can cite them, not to reopen them.
 | | Binding rule |
 | - | ------------ |
 | Namespace | The repository is the namespace. Agents flat under `workflow-runtime/agents/`, filename == frontmatter `name:`. Skills exactly one level: `workflow-runtime/skills/<name>/SKILL.md`. |
-| Generic names stay | `sheep-start`, `sheep-status`, `sheep-close`, `status.json`, `story.md`, `specs/`. No product suffixes. |
+| Generic names stay | `sheep-start`, `sheep-status`, `sheep-close`, `status.json`, `scenarios.json`, `specs/`. No product suffixes. |
 | Only the selector moves | `nicki` → `shinobu` for the orchestrator agent, its rule, its routing/bootstrap folder, and product-facing config filenames. |
 | No sharing | No shared runtime package, no Nicki↔Shinobu sync, no `--pipeline` flag. |
-| Loop | Plain in-repo script, invoked synchronously in the live session. Not a daemon, not a graph framework. The loop marks `- [x]`; green never does. |
+| Loop | Plain in-repo script, invoked synchronously in the live session. Not a daemon, not a graph framework. The loop flips `done: true`; green never does. |
 | Consent | Exactly two: before the first red, after review. |
 | Story artifact | `current-task/scenarios.json`: ordered array of `{ id, title, gherkin, done }`. The loop reads the first `done: false`, flips `done` after green. Replaces the `- [ ]` Markdown checklist (owner's call, S2a). |
 | Red | Input is one packed scenario object from `scenarios.json` (id, title, gherkin). Success = fails right. Anything else → `open_questions`, loop holds. |
 | Green | Input is the git diff only. Never edits the test or the story. |
 | The four new sheep | `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor`. |
 | Refactors are **serial** | `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Each is an ordinary step with its own `sheep-status`. No fork-and-join anywhere. **Exact file scope stays OPEN until those sheep are built (S3b), not decided here.** |
-| Review | Two explicit jobs: full-suite **regression** check, and **scenario compliance** — every `- [x]` in `story.md` actually satisfied. |
+| Review | Two explicit jobs: full-suite **regression** check, and **scenario compliance** — every `done: true` scenario in `scenarios.json` actually satisfied. |
 | Editing | Edit `workflow-runtime/`, never through `.cursor/` or `.claude/`. After changing the invocation rule, run both installers and commit the regenerated `.mdc`. |
 
 ---
@@ -173,7 +173,7 @@ Why now, and why its own job: S3a's red packs one object from this file and S4's
 
 ### S3a — `sheep-red` + `sheep-green`
 
-Two agent files and two skills: `skills/red-implementation/SKILL.md`, `skills/green-implementation/SKILL.md`. Red takes one packed scenario (id + body) and the worktree, writes/extends step definitions, runs that scenario's test **once**, returns `task: false`; success is exactly "fails right", everything else is `open_questions`. Green takes the git diff only, makes the smallest change that passes, never touches the test or `story.md`. Both follow the existing sheep return contract in `routing.json`.
+Two agent files and two skills: `skills/red-implementation/SKILL.md`, `skills/green-implementation/SKILL.md`. Red takes one packed scenario (id + body) and the worktree, writes/extends step definitions, runs that scenario's test **once**, returns `task: false`; success is exactly "fails right", everything else is `open_questions`. Green takes the git diff only, makes the smallest change that passes, never touches the test or `scenarios.json`. Both follow the existing sheep return contract in `routing.json`.
 
 **Files:** the four listed above. Nothing else — no routing, no `shinobu.md`, no permissions, no tests.
 
@@ -200,7 +200,7 @@ Two agent files and two skills: `skills/green-refactor/`, `skills/red-refactor/`
 `sheep-review` and `skills/review-execution/` gain two explicit duties, and the prompt says they are duties, not suggestions:
 
 1. **Regressions** — run the whole suite, not only this task's scenarios, and report anything that broke. This is the step that catches a refactor which quietly changed behaviour.
-2. **Scenario compliance** — every `- [x]` line in `story.md` is actually satisfied by the implementation. A checked box that the loop flipped is a claim, not evidence.
+2. **Scenario compliance** — every `done: true` scenario in `scenarios.json` is actually satisfied by the implementation. A `done` flag that the loop flipped is a claim, not evidence.
 
 Keep everything review already does. Review still writes nothing but its return, and still routes its verdict through `summary`.
 
@@ -216,13 +216,13 @@ Also drop `review-execution/review-guidance-format.md`'s hardcoded `current-task
 
 Serial, and the only job that touches shared files.
 
-- `shinobu.md`: the loop as a plain in-repo script invoked synchronously — pick the first `- [ ]` in `story.md`, pack it into red, run green on the diff, mark `- [x]`, repeat. Exit when none remain. Two consents, no clock, no polling between red and green.
-- `routing.json`: `start → spec → scenarios → red → green → …` with loop-back while the story has `- [ ]`, then `green-refactor → red-refactor → review → git tail`. Four ordinary steps; no fork-and-join, no aggregate status write.
+- `shinobu.md`: the loop as a plain in-repo script invoked synchronously — pick the first `done: false` scenario in `scenarios.json`, pack it into red, run green on the diff, flip `done: true`, repeat. Exit when none remain. Two consents, no clock, no polling between red and green.
+- `routing.json`: `start → spec → scenarios → red → green → …` with loop-back while `scenarios.json` has a `done: false` scenario, then `green-refactor → red-refactor → review → git tail`. Four ordinary steps; no fork-and-join, no aggregate status write.
 - `.cursor/hooks/agent-permissions.json`: the four new agent keys. `.cursor/permissions.json`: any new allowlist prefix the loop script needs.
 - Red returning `open_questions` holds the loop and holds `next_step`.
 - The human gate after gherkin: Shinobu renders `scenarios.json`'s scenarios in chat (id, title, gherkin) for approval. The human never reads the JSON raw.
 
-**Done when:** `python3 test.py` green · routing graph terminates at `done` · a hand-run of the loop script against a fixture `story.md` with two unchecked scenarios flips exactly one box per successful green and stops when the file is clear · `green-refactor` precedes `red-refactor` in routing and each has its own status step · every new path string resolves.
+**Done when:** `python3 test.py` green · routing graph terminates at `done` · a hand-run of the loop script against a fixture `scenarios.json` with two `done: false` scenarios flips exactly one `done` per successful green and stops when none remain · `green-refactor` precedes `red-refactor` in routing and each has its own status step · every new path string resolves.
 
 **Model:** Opus 5.
 
@@ -290,6 +290,6 @@ Recorded so a worker who read an earlier copy is not misled.
 | --- | --- | --- |
 | `sheep-test-refactor`, `sheep-implementation-refactor` | `sheep-green-refactor` (implementation), `sheep-red-refactor` (tests) | Owner's call. Shorter, and the red/green vocabulary is already the pipeline's. |
 | Refactor pair runs **in parallel** with disjoint write domains; routing needs fork-and-join; one aggregate status write | **Serial**: green-refactor, then red-refactor. Two ordinary steps, each with its own `sheep-status`. No fork-and-join. | Owner's call: concurrent mutation of implementation and tests lets one refactor mask the other's regression. Sequencing tests last means they are tidied against implementation that has already settled. |
-| Review described only as "authoritative final verification" | Review has two named duties: full-suite regression check, and scenario compliance against every `- [x]` | Owner's call. With refactors now running after the loop, review is the only thing standing between a silent behaviour change and the git tail. |
+| Review described only as "authoritative final verification" | Review has two named duties: full-suite regression check, and scenario compliance against every `done: true` scenario | Owner's call. With refactors now running after the loop, review is the only thing standing between a silent behaviour change and the git tail. |
 
 `SHINOBU.md`, `SHINOBU_NEXT_STEPS.md` (including the settled table), and `OWNERSHIP.md` were updated to match. S1's scope and prompt are unaffected by all three changes.

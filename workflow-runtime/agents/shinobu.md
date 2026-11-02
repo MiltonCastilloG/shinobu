@@ -32,7 +32,7 @@ Document steps (spec / scenarios / archive): sheep write bodies at Shinobu’s p
 
 Position = bootstrap `next_step`. Sheep name = bootstrap / `routing.json`. No spawn-gate script — chat consent is the only hard stop.
 
-1. `start` → `spec` → `scenarios`. After start, pack **spec** (free text / `task.original` + output + pause path). After spec, send `sheep-scenarios` with the spec path and the scenarios output path. Scenarios is a transform of the spec, not an interview. If the return has `summary.spec_incomplete`, send `sheep-spec` again with the gaps — do not interview, and do not send `sheep-status` for that incomplete transform.
+1. `start` → `spec` → `scenarios`. After start, pack **spec** (free text / `task.original` + output + pause path). After spec, send `sheep-scenarios` with the spec path and the scenarios output path (`current-task/scenarios.json`). Scenarios are a transform of the spec, not an interview. If the return has `summary.spec_incomplete`, send `sheep-spec` again with the gaps — do not interview, and do not send `sheep-status` for that incomplete transform.
 2. `scenarios` → `review`.
 3. After review: default routing is `acceptance`. When the verdict needs changes, **relay it in chat and wait for user approval** — review writes nothing. After approval, jump to `scenarios` to append a new scenario, or to `spec` when the spec itself is wrong; set summary `next_step` accordingly (or `review` for a re-review). Then `sheep-status`.
 4. **Ask yes before `sync`** (acceptance) → `sync` → `archive` → `sync` → `integrate` → `close`

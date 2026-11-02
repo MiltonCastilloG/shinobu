@@ -30,7 +30,7 @@ Run Stage 1 and the neutral-runtime extract before the fork so both products inh
 | Split | More than four **`Then`** clauses, or two-sentence / goal-shaped. |
 | Consent | Once before first red; once after review. Red / green and the two final refactors run uninterrupted — no clock. |
 | Red | Input = **one Gherkin scenario** packed by Shinobu. Success = fails right. Else error / hold. |
-| Green | Input = **git diff only**. Does not edit the test or the story. |
+| Green | Input = **git diff only**. Does not edit the test or `scenarios.json`. |
 | Final refactors | **Serial, in this order:** `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Sequential so neither can mask the other's regression, and tests are tidied last against settled implementation. Each owns a file domain; exact scope is open until build time. |
 | Amend | Append as a **new** scenario object with `done: false`. Final refactors or the human catch duplication. |
 | Cursor | `scenarios.json`. The **loop** packs the first `done: false` scenario into red; after green succeeds, the **same loop** sets `done: true` programmatically. Not green. Exact flip is for loop-build time. Exit: none left. JSON so the loop script reads and flips without parsing Markdown. |
@@ -60,7 +60,7 @@ Lives on **Nicki**. Shinobu copies this head later. No Shinobu agent yet.
 
 ### Gherkin is a transform
 
-- `story-maker` reads spec, orders, splits on four `Then`s, no product `open_questions`.
+- `story-maker` (Shinobu: `scenario-maker`) reads spec, orders, splits on four `Then`s, no product `open_questions`.
 - No interview language in `nicki.md`. Incomplete spec → `sheep-spec` again.
 - Product questions stay on spec (`spec-maker` Step 2 / stop-and-ask). Supersedes #6 describe-asks.
 
@@ -68,17 +68,17 @@ Lives on **Nicki**. Shinobu copies this head later. No Shinobu agent yet.
 
 Live map: [`OWNERSHIP.md`](OWNERSHIP.md).
 
-Do not prefix generic names for collision avoidance. Agents stay flat. Keep `sheep-start`, `sheep-status`, `sheep-close`, `sheep-subtask`, `sheep-execute`, `status.json`, `story.md`, `specs/`, `subtasks/`, and `global-status.json`.
+Do not prefix generic names for collision avoidance. Agents stay flat. Keep `sheep-start`, `sheep-status`, `sheep-close`, `status.json`, `scenarios.json`, `specs/`, and `global-status.json` (Nicki's `sheep-subtask`, `sheep-execute`, `story.md`, `subtasks/` did not carry over).
 
 Stage 1 still audits hardcoded Nicki paths so the fork boundary is explicit. Product-facing selector, routing, bootstrap environment, workspace/config/version filenames, and installer text change in the Shinobu fork.
 
-### `story-format.md`
+### `story-format.md` → `scenario-format.md`
 
-Scenario ids, dependency order, **`- [ ]` / `- [x]` per scenario**. Ids and checkboxes help Nicki subtasks follow order; Shinobu uses the same file shape as its loop cursor.
+Nicki keeps the Markdown checklist (ids, dependency order, `- [ ]` / `- [x]` per scenario). Shinobu's S2a replaced it with [`scenario-format.md`](../workflow-runtime/skills/scenario-maker/scenario-format.md): ids, dependency order, and `done` per scenario in `scenarios.json`, which is also the loop cursor.
 
 ### Docs
 
-Done this pass: `docs/NICKI.md`, `WORKFLOW-DIAGRAMS.md`, `status-read.md` / `status-format.md` (closes #13), task-list Shinobu/flexibility blurbs, `caller-owned-output-shape.md` sheep name. Live pipeline language is `start → spec → gherkin → subtasks → …` / `sheep-gherkin`.
+Done this pass: `docs/NICKI.md`, `WORKFLOW-DIAGRAMS.md`, `status-read.md` / `status-format.md` (closes #13), task-list Shinobu/flexibility blurbs, `caller-owned-output-shape.md` sheep name. Live Shinobu pipeline language is `start → spec → scenarios → review → …` / `sheep-scenarios` (Nicki's remains `gherkin` / `sheep-gherkin`).
 
 ---
 
@@ -102,11 +102,11 @@ Done this pass: `docs/NICKI.md`, `WORKFLOW-DIAGRAMS.md`, `status-read.md` / `sta
 
 ### Loop
 
-- Exit = no unchecked scenarios. Prove in smoke (`next_step_when_scenarios_remain` or equivalent reading the story artifact).
+- Exit = no scenario with `done: false`. Prove in smoke (`next_step_when_scenarios_remain` or equivalent reading `scenarios.json`).
 - Red errors: `open_questions` hold.
 - No clock. Red and green run until they return.
 - **One-shot job:** red and green each run **this scenario’s test once**, then return. `task: false`.
-- Four skills + four sheep: `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor`. Green does not edit the test or the story. Checklist flips belong to the loop.
+- Four skills + four sheep: `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor`. Green does not edit the test or `scenarios.json`. `done` flips belong to the loop.
 - The two refactors are two ordinary sequential steps, each followed by its own `sheep-status`. No fork-and-join in routing, no aggregate status write.
 - Review performs authoritative final verification: it runs the **whole** suite looking for regressions the refactors introduced, and checks every `done: true` scenario against the implementation.
 

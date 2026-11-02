@@ -34,7 +34,7 @@ A worktree belongs to whichever repository created it.
 | Sheep | Input | Output |
 | ----- | ----- | ------ |
 | `sheep-red` | **One Gherkin scenario** (Shinobu packs it — one object from `scenarios.json`: id, title, gherkin text — the way it packs a spec path). Worktree as scope. | Step definitions + a run. Success: the test **fails right**. Anything else is an **error** (`open_questions`); the loop stops. |
-| `sheep-green` | **The git diff only** (uncommitted tree after red). | Smallest change that makes the failing test pass. Does not edit the test. Does not touch the story checklist. |
+| `sheep-green` | **The git diff only** (uncommitted tree after red). | Smallest change that makes the failing test pass. Does not edit the test. Does not touch `scenarios.json`. |
 | `sheep-green-refactor` | **The post-loop git diff.** Runs **first**. | Revises implementation only: simplify, remove duplication, and improve implementation abstractions without changing behavior. Exact implementation-file scope is deliberately open until build time. |
 | `sheep-red-refactor` | **The git diff after `sheep-green-refactor`.** Runs **second**. | Revises tests only: simplify, remove duplication, and improve test abstractions without changing scenario meaning. Exact test-file scope is deliberately open until build time. |
 
@@ -73,15 +73,15 @@ Start, status, and close retain the generic names `sheep-start`, `sheep-status`,
 
 `sheep-scenarios` writes `current-task/scenarios.json`: an ordered array of scenario objects, each with a stable `id`, a `title`, the `scenarios` text, and `done: false`. Array order is dependency order. That file **is** the cursor. No extra field on status.
 
-JSON, not Markdown, because the loop is a script: "first scenario with `done: false`" is a one-line lookup, marking done is a boolean flip rather than a line edit, and red receives one object instead of a parsed Markdown block. The spec is already JSON; the story now matches it. Shinobu renders the scenarios in chat at the human gate, so the human never reads the JSON raw.
+JSON, not Markdown, because the loop is a script: "first scenario with `done: false`" is a one-line lookup, marking done is a boolean flip rather than a line edit, and red receives one object instead of a parsed Markdown block. The spec is already JSON; `scenarios.json` now matches it. Shinobu renders the scenarios in chat at the human gate, so the human never reads the JSON raw.
 
 - The **loop** (Shinobu, programmatically — not a sheep) picks the first `done: false` scenario and packs that object into red.
-- After green returns success, the **same loop** sets that scenario's `done` to `true`. Green never edits the story. Exact flip mechanism is for when the loop is built.
+- After green returns success, the **same loop** sets that scenario's `done` to `true`. Green never edits `scenarios.json`. Exact flip mechanism is for when the loop is built.
 - **Exit:** no `done: false` left → `sheep-green-refactor`, then `sheep-red-refactor`.
 - Amend appends a new object with `done: false`. The loop will pick it up; earlier `done: true` entries stay done and are never rewritten.
 - **Runs where:** a plain in-repo script invoked synchronously in the live session — not a background daemon, not a graph framework (e.g. LangGraph).
 
-`status.json` still holds `current_step` / `next_step` / artifact pointers / `open_questions`. It does not store which scenario is next — the story file does.
+`status.json` still holds `current_step` / `next_step` / artifact pointers / `open_questions`. It does not store which scenario is next — `scenarios.json` does.
 
 ---
 

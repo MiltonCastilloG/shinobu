@@ -33,7 +33,7 @@ Repository identity is the namespace. Do not add product suffixes merely to avoi
 - Orchestrator selector is the product name: `nicki` in Nicki, changed to `shinobu` in the fork.
 - Skills stay one level below `workflow-runtime/skills/` because Claude only discovers `<skills>/<name>/SKILL.md`.
 - Scripts may remain under their owning skill; no filename prefix is needed.
-- Current-task artifacts remain generic (`status.json`, `story.md`, `specs/`, `subtasks/`) because the repositories and worktrees are separate.
+- Current-task artifacts remain generic (`status.json`, `scenarios.json`, `specs/`) because the repositories and worktrees are separate.
 
 ## Target runtime layout
 
@@ -70,7 +70,7 @@ Supporting markdown does not belong under `agents/`; Cursor can discover nested 
 | `sheep-status` | fork baseline | Move flat; keep name in both repositories | Each repository writes its own `status.json`. |
 | `sheep-close` | fork baseline | Move flat; keep name in both repositories | Each repository owns teardown and registry mutation. |
 | `sheep-spec` | fork baseline | Move flat; keep name | Both products start from the same spec behavior at the fork point. |
-| `sheep-gherkin` | fork baseline | Move flat; keep name | Stage 1 makes spec → Gherkin checklist; both inherit it. |
+| `sheep-scenarios` | fork baseline | Move flat; renamed from `sheep-gherkin` in S2a | Spec → `scenarios.json` (ordered Gherkin scenarios). Gherkin is the format, not the name. |
 | `sheep-review` | fork baseline | Move flat; keep name | Both inherit review behavior, then may diverge. |
 | `sheep-sync` | fork baseline | Move flat; keep name | Git tail copied into each repository. |
 | `sheep-archive` | fork baseline | Move flat; keep name | Archive behavior copied into each repository. |
@@ -79,7 +79,7 @@ Supporting markdown does not belong under `agents/`; Cursor can discover nested 
 | `sheep-subtask` | Nicki | Move flat; keep name | Nicki tail; remove from Shinobu when its TDD pipeline replaces it. |
 | `sheep-execute` | Nicki | Move flat; keep name | Nicki tail; remove from Shinobu when red/green replaces it. |
 | `sheep-red` | Shinobu | Add after fork | One scenario; success means fails right. |
-| `sheep-green` | Shinobu | Add after fork | Minimal change to pass; does not edit test/story. |
+| `sheep-green` | Shinobu | Add after fork | Minimal change to pass; does not edit test or `scenarios.json`. |
 | `sheep-green-refactor` | Shinobu | Add after fork | Implementation-only refactor; runs first. |
 | `sheep-red-refactor` | Shinobu | Add after fork | Tests-only refactor; runs second, after green-refactor. |
 
@@ -94,7 +94,7 @@ Agent permissions use the same flat agent names. No Nicki/Shinobu suffix keys ar
 | `close-task/` | fork baseline | Keep generic, move | Each repository has one close lifecycle. |
 | `close-scope/` | fork baseline | Keep generic, move | Registry/worktree teardown copied at fork. |
 | `spec-maker/` | fork baseline | Keep generic, move | Common baseline behavior. |
-| `story-maker/` | fork baseline | Keep generic, move | Stage 1 Gherkin transform inherited by Shinobu. |
+| `scenario-maker/` | fork baseline | Keep generic, move; renamed from `story-maker/` in S2a | Spec → `scenarios.json` transform inherited by Shinobu; format in `scenario-format.md`. |
 | `review-execution/` | fork baseline | Keep generic, move | Independent copies after fork. |
 | `sync-task/` | fork baseline | Keep generic, move | Git operation copied at fork. |
 | `integrate-task/` | fork baseline | Keep generic, move | Git operation copied at fork. |
@@ -135,7 +135,7 @@ Neutral extraction may keep `.cursor/skills/...` command paths temporarily throu
 | Name | Owner | Action | Why |
 | ---- | ----- | ------ | --- |
 | `current-task/status.json` | workspace layout | Keep generic | One product per repository/worktree. |
-| `current-task/story.md` | workspace layout | Keep generic | No cross-product collision. |
+| `current-task/scenarios.json` | workspace layout | Keep generic; was `story.md` before S2a | No cross-product collision. |
 | `current-task/specs/` | workspace layout | Keep generic | No cross-product collision. |
 | `current-task/subtasks/` | Nicki | Keep in Nicki; Shinobu may remove after fork | Nicki tail only. |
 | `current-task/specs/errors.json` | fork baseline | Keep generic | Harness-local error record. |
@@ -155,7 +155,7 @@ The old prefixed artifact proposal (`nicki-status.json`, `shinobu-status.json`, 
 | Nicki routing | Nicki | Stage 1 becomes `start → spec → gherkin → subtasks → execute → …`. |
 | Bootstrap/read path | fork baseline | Neutral extraction removes `.cursor` as canonical source; fork changes product selector/routing only. |
 | Status writer | fork baseline | Keep `status.json`; route from the repository-local routing file. |
-| Shinobu routing | Shinobu | After fork: `start → spec → gherkin → red/green loop → green-refactor → red-refactor → review → git tail`. |
+| Shinobu routing | Shinobu | After fork: `start → spec → scenarios → red/green loop → green-refactor → red-refactor → review → git tail`. |
 | Lifecycle implementation | fork baseline | Copied with history, then independently maintained; never parameterized across repositories. |
 
 ## Rules, hooks, permissions, installers
@@ -178,8 +178,8 @@ Stage 1 must cover:
 
 - `start → spec → gherkin → subtasks`;
 - generic agent names (`sheep-start`, `sheep-status`, `sheep-close`);
-- generic artifacts (`status.json`, `story.md`, `specs/`, `subtasks/`);
-- the live `sheep-gherkin` routing/file/frontmatter name;
+- generic artifacts (`status.json`, `story.md`, `specs/`, `subtasks/`) — Nicki's names; Shinobu's are `scenarios.json` and no `subtasks/`;
+- the live `sheep-gherkin` routing/file/frontmatter name — Nicki's; Shinobu's is `sheep-scenarios`;
 - hardcoded `.cursor/skills/...` compatibility during neutral extraction;
 - `routing_write.py` and bootstrap routing ownership;
 - recursive agent test globs only if the runtime ever introduces agent subfolders (current decision: flat).

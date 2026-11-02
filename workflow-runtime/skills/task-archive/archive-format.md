@@ -7,7 +7,7 @@
 ```
 <prefix>/docs/archive/<slug>/report.json
 <prefix>/docs/archive/<slug>/report.md
-<prefix>/docs/archive/<slug>/scenarios.json # copy from artifacts.scenarios when present
+<prefix>/docs/archive/<slug>/scenarios.json  # copy from artifacts.scenarios when present
 <prefix>/docs/archive/<slug>/errors.json   # verbatim copy when the caller named an errors path
 ```
 
@@ -24,7 +24,7 @@ Caller packs the paths. Task archive: read `current-task/status.json` — [statu
 
 | Step | Artifact pointer | Summary source |
 |------|------------------|----------------|
-| `scenarios` | `artifacts.scenarios` | scenarios exist → brief line from feature title or slug |
+| `scenarios` | `artifacts.scenarios` | scenarios exist → brief line from `feature.title` or slug |
 | `spec` | `artifacts.spec` | `meta.summary` or spec `title` |
 | `review` | (none — review writes no file) | verdict as relayed in chat |
 | `sync` | (none) | branch pushed |
