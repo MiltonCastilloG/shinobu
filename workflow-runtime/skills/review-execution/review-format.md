@@ -11,7 +11,7 @@ Review writes **no file**. This shape is what the review return `summary` convey
 | `approved` | Yes | `true` if the implementation passes review; `false` if blocking issues remain |
 | `content` | Yes | Pass summary (`approved: true`) or actionable issue list (`approved: false`) |
 
-**Output reviews have no other top-level keys.** Do not add `meta`, `title`, or routing hints.
+**Output reviews have no other top-level keys.** Do not add `meta`, `title`, or any other extra key.
 
 ## Optional review input (guidance)
 
@@ -27,8 +27,8 @@ Review guidance files use review JSON plus one extra input-only key. See [review
 
 ## `approved`
 
-- `true` — requirements met, verify passed, no blocking convention violations. `[scope]` notes allowed.
-- `false` — one or more **blocking** issues (`[req-`, `[verify]`, `[convention]`). `[scope]` alone does not require `false`.
+- `true` — requirements met, verify passed, no blocking convention violations, the full suite is green, and every `done: true` scenario is present, passed, and genuinely satisfied. `[scope]` notes allowed.
+- `false` — one or more **blocking** issues (`[req-`, `[verify]`, `[convention]`, `[regression]`, `[scenario-`). `[scope]` alone does not require `false`.
 
 ## `content`
 
@@ -41,7 +41,7 @@ Brief pass summary (2–5 lines). Mention requirements coverage, verify results,
 ```json
 {
   "approved": true,
-  "content": "All spec requirements met (hero-headline, hero-subcopy, hero-cta, hero-tokens).\nVerify: npm run lint and npm test -- Hero passed.\nNo files changed outside spec scope.\n"
+  "content": "Regression: npm test green (128 tests).\nScenarios: 4/4 done: true present, passed, satisfied (hero-headline, hero-subcopy, hero-cta, hero-tokens).\nAll spec requirements met. Verify: npm run lint passed. No files changed outside spec scope.\n"
 }
 ```
 
@@ -55,11 +55,20 @@ List **blocking issues** only. Each bullet should be actionable — reference ID
 | `[scope]` | Change outside spec `scope.out` — **non-blocking**; name it in the summary as deferred work |
 | `[verify]` | Lint, test, build, or other check failure |
 | `[convention]` | CONTRIBUTING rule violation (tokens, i18n, deps) |
+| `[regression]` | A test in the full suite run failed |
+| `[scenario-<id>]` | A `done: true` scenario not present, not passed, or not genuinely satisfied |
 
 ```json
 {
   "approved": false,
   "content": "[req-hero-cta] Hero component has no CTA button — only headline and subcopy rendered.\n[verify] npm run lint failed: src/components/Hero/Hero.tsx — unused import 'Link'.\n[scope] src/components/Footer/Footer.tsx modified — outside spec scope.out.\n"
+}
+```
+
+```json
+{
+  "approved": false,
+  "content": "[regression] npm test failed: tests/checkout/discount.spec.js — 'applies 10% discount' now throws TypeError: cannot read property 'rate' of undefined.\n[scenario-hero-cta] done: true but Scenario: Primary CTA is present is missing from src/features/hero/hero.feature — only hero-headline is present.\n"
 }
 ```
 
