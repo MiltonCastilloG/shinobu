@@ -2,7 +2,7 @@
 
 Actionable backlog. Completed work: [`tasks-done.md`](tasks-done.md).
 
-This repository is a history-preserving fork of Nicki at `v0.3.0-nicki-baseline`. Stage 2 builds the TDD pipeline: [`SHINOBU.md`](../SHINOBU.md) · sequence: [`SHINOBU_NEXT_STEPS.md`](../SHINOBU_NEXT_STEPS.md) · job graph, write domains, and per-job done-when: [`2026-09-19-shinobu-stage-2-plan.md`](2026-09-19-shinobu-stage-2-plan.md).
+This repository is a history-preserving fork of Nicki at `v0.3.0-nicki-baseline`. Stage 2 builds the TDD pipeline: [`SHINOBU.md`](../SHINOBU.md) · sequence: [`SHINOBU_NEXT_STEPS.md`](../SHINOBU_NEXT_STEPS.md) · job graph, write domains, and per-job done-when: [`2026-09-19-shinobu-stage-2-plan.md`](2026-09-19-shinobu-stage-2-plan.md) · **orchestrator handoff (read this if you're picking up fresh):** [`2026-11-02-orchestrator-handoff.md`](2026-11-02-orchestrator-handoff.md).
 
 ## Three goals (always)
 
