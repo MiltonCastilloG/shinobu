@@ -53,6 +53,8 @@ Scenarios define **what** to build as checkable behaviors. They do **not** name 
 
 The file is valid JSON. Write no comments and no trailing commas.
 
+No other fields. Do not add `order`, `depends_on`, `status`, or a per-scenario `spec` pointer.
+
 ## Scenario ids
 
 Each scenario has a stable id, like a spec requirement id: lowercase kebab-case, **unique** in the file. A caller packs **id + title + gherkin** by reading one object — no prose parsing.

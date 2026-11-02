@@ -71,7 +71,7 @@ Start, status, and close retain the generic names `sheep-start`, `sheep-status`,
 
 ## Scenario list (the cursor)
 
-`sheep-scenarios` writes `current-task/scenarios.json`: an ordered array of scenario objects, each with a stable `id`, a `title`, the `scenarios` text, and `done: false`. Array order is dependency order. That file **is** the cursor. No extra field on status.
+`sheep-scenarios` writes `current-task/scenarios.json`: an ordered array of scenario objects, each with a stable `id`, a `title`, the `gherkin` text, and `done: false`. Array order is dependency order. That file **is** the cursor. No extra field on status.
 
 JSON, not Markdown, because the loop is a script: "first scenario with `done: false`" is a one-line lookup, marking done is a boolean flip rather than a line edit, and red receives one object instead of a parsed Markdown block. The spec is already JSON; `scenarios.json` now matches it. Shinobu renders the scenarios in chat at the human gate, so the human never reads the JSON raw.
 

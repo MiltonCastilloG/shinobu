@@ -22,7 +22,7 @@ Restated so a worker prompt can cite them, not to reopen them.
 | Consent | Exactly two: before the first red, after review. |
 | Story artifact | `current-task/scenarios.json`: ordered array of `{ id, title, gherkin, done }`. The loop reads the first `done: false`, flips `done` after green. Replaces the `- [ ]` Markdown checklist (owner's call, S2a). |
 | Red | Input is one packed scenario object from `scenarios.json` (id, title, gherkin). Success = fails right. Anything else → `open_questions`, loop holds. |
-| Green | Input is the git diff only. Never edits the test or the story. |
+| Green | Input is the git diff only. Never edits the test or `scenarios.json`. |
 | The four new sheep | `sheep-red`, `sheep-green`, `sheep-green-refactor`, `sheep-red-refactor`. |
 | Refactors are **serial** | `sheep-green-refactor` (implementation) on the post-loop diff, then `sheep-red-refactor` (tests) on the diff that leaves. Each is an ordinary step with its own `sheep-status`. No fork-and-join anywhere. **Exact file scope stays OPEN until those sheep are built (S3b), not decided here.** |
 | Review | Two explicit jobs: full-suite **regression** check, and **scenario compliance** — every `done: true` scenario in `scenarios.json` actually satisfied. |

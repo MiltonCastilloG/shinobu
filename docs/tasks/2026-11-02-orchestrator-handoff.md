@@ -2,7 +2,7 @@
 
 **For:** whoever picks up the architect/orchestrator role next. You plan, write worker prompts, audit results, and keep `tasks.md` current. You do not implement — see the role brief below, which is unchanged from the original.
 
-**As of:** 2026-11-02, commit `702de4f`, tree clean, `python3 test.py` green on 15 smoke modules.
+**As of:** 2026-11-02, after the S2a reconciliation merge `e9b1d6d` and its follow-up, tree clean, `python3 test.py` green on 15 smoke modules.
 
 ---
 
@@ -53,7 +53,7 @@ You are the architect/orchestrator. You do NOT implement. You plan, write prompt
 ```
 S1  identity rename                              done  (72748ce)
 S2  remove the Nicki tail                        done  (5478d3a)
-S2a scenarios.json + one name at every level      done  (5bbf848, + follow-up 0eab38d)
+S2a scenarios.json + one name at every level      done  (5bbf848 ∥ 1d18dc6, merged e9b1d6d)
  │
  ├─────────────┬─────────────┐
 S3a red+green  S3b refactors S3c review          ← NEXT. Three workers, parallel.
